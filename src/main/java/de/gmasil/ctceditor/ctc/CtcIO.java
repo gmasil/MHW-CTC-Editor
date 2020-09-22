@@ -1,4 +1,4 @@
-package de.gmasil.ctceditor;
+package de.gmasil.ctceditor.ctc;
 
 import java.io.File;
 import java.io.FileInputStream;
