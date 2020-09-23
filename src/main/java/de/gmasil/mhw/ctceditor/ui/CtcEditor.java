@@ -13,14 +13,15 @@ import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
@@ -32,16 +33,13 @@ import javax.swing.tree.TreePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.javafx.application.PlatformImpl;
-
 import de.gmasil.mhw.ctceditor.ctc.Ctc;
 import de.gmasil.mhw.ctceditor.ctc.CtcBone;
 import de.gmasil.mhw.ctceditor.ctc.CtcChain;
+import de.gmasil.mhw.ctceditor.ctc.CtcHeader;
 import de.gmasil.mhw.ctceditor.ctc.CtcIO;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 
-public class CtcEditor extends JFrame {
+public class CtcEditor extends JFrame implements FileOpenedListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	private File lastOpenedFile = null;
@@ -49,6 +47,7 @@ public class CtcEditor extends JFrame {
 	private DefaultMutableTreeNode rootNode;
 	private JTree tree;
 	private Config config = new Config();
+	private WindowsFileChooser windowsFileChooser = new WindowsFileChooser(config, this);
 
 	public CtcEditor() {
 		this.setTitle("MHW CTC Editor");
@@ -66,29 +65,9 @@ public class CtcEditor extends JFrame {
 		menuBar.add(menuFile);
 		JMenuItem menuOpen = new JMenuItem("Open");
 		menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-		menuOpen.addActionListener(event -> PlatformImpl.startup(() -> {
-			FileChooser d = new FileChooser();
-			d.getExtensionFilters().add(new ExtensionFilter("CTC files (*.ctc)", "*.ctc"));
-			d.getExtensionFilters().add(new ExtensionFilter("All files", "*.*"));
-			if (lastOpenedFile != null) {
-				File initialDirectory;
-				if (lastOpenedFile.isFile()) {
-					initialDirectory = lastOpenedFile.getParentFile();
-				} else {
-					initialDirectory = lastOpenedFile;
-				}
-				if (initialDirectory.exists()) {
-					d.setInitialDirectory(initialDirectory);
-				}
-			}
-			File selectedFile = d.showOpenDialog(null);
-			if (selectedFile != null) {
-				lastOpenedFile = selectedFile;
-				config.setProperty(Config.LAST_OPENED_FILE, lastOpenedFile.getAbsolutePath());
-				config.save();
-				loadFile(selectedFile);
-			}
-		}));
+		menuOpen.addActionListener(event -> {
+			windowsFileChooser.openDialog();
+		});
 		menuFile.add(menuOpen);
 		JMenuItem menuClose = new JMenuItem("Close");
 		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
@@ -111,22 +90,48 @@ public class CtcEditor extends JFrame {
 		scrollTree.setMinimumSize(new Dimension(200, 0));
 		scrollTree.setPreferredSize(new Dimension(500, 500));
 		tree.addTreeSelectionListener(e -> {
-			System.out.println("New Selection Event:");
 			if (tree.getSelectionPaths() != null) {
-				for (TreePath selectionPath : tree.getSelectionPaths()) {
-					System.out.println("\t- " + selectionPath);
-					int pathCount = selectionPath.getPathCount();
-					System.out.println(pathCount);
+				Class<?> clazz = null;
+				if (tree.getSelectionCount() == 1) {
+					Object lastPathComponent = tree.getSelectionPath().getLastPathComponent();
+					if (lastPathComponent instanceof DefaultMutableTreeNode) {
+						Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
+						clazz = userObject.getClass();
+					}
+				} else if (tree.getSelectionCount() > 1) {
+					for (TreePath selectionPath : tree.getSelectionPaths()) {
+						Object lastPathComponent = selectionPath.getLastPathComponent();
+						if (lastPathComponent instanceof DefaultMutableTreeNode) {
+							Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
+							if (clazz != null) {
+								if (userObject.getClass() != clazz) {
+									// set panel to info
+									return;
+								}
+							}
+							clazz = userObject.getClass();
+						}
+					}
+				}
+				if (clazz != null) {
+					if (clazz == CtcHeader.class) {
+
+					} else if (clazz == CtcChain.class) {
+
+					} else if (clazz == CtcBone.class) {
+
+					}
 				}
 			}
 		});
 
-		JTextArea textArea = new JTextArea();
-		JScrollPane scrollTextArea = new JScrollPane(textArea);
-		scrollTextArea.setMinimumSize(new Dimension(200, 0));
-		scrollTextArea.setPreferredSize(new Dimension(500, 500));
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		JScrollPane scrollMainPanel = new JScrollPane(mainPanel);
+		scrollMainPanel.setMinimumSize(new Dimension(200, 0));
+		scrollMainPanel.setPreferredSize(new Dimension(500, 500));
 
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, textArea);
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
 		getContentPane().add(split, BorderLayout.CENTER);
 
 		handleConfig();
@@ -143,7 +148,7 @@ public class CtcEditor extends JFrame {
 							Object transferObject = transferList.get(0);
 							if (transferObject instanceof File) {
 								File transferFile = (File) transferObject;
-								loadFile(transferFile);
+								onFileOpened(transferFile);
 							} else {
 								JOptionPane.showMessageDialog(CtcEditor.this, "You can only drop files here.",
 										"Drag and Drop Error", JOptionPane.OK_OPTION);
@@ -163,7 +168,8 @@ public class CtcEditor extends JFrame {
 		this.setVisible(true);
 	}
 
-	public void loadFile(File file) {
+	@Override
+	public void onFileOpened(File file) {
 		try {
 			currentCtc = CtcIO.readFile(file);
 			refreshTree();
