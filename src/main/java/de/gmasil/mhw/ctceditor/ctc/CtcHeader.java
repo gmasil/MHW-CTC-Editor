@@ -28,6 +28,9 @@ public class CtcHeader {
 		chars[2] = (char) buffer.get();
 		buffer.get();
 		fileType = new String(chars);
+		if (!fileType.equals("CTC")) {
+			throw new IllegalStateException("File header does not look like a CTC file");
+		}
 		unknownConstantIntSet[0] = buffer.getInt();
 		unknownConstantIntSet[1] = buffer.getInt();
 		unknownConstantIntSet[2] = buffer.getInt();
