@@ -1,4 +1,4 @@
-package de.gmasil.ctceditor.ctc;
+package de.gmasil.mhw.ctceditor.ctc;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

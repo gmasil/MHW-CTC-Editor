@@ -1,4 +1,4 @@
-package de.gmasil.ctceditor.ui;
+package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -25,10 +25,10 @@ import javax.swing.tree.TreePath;
 
 import com.sun.javafx.application.PlatformImpl;
 
-import de.gmasil.ctceditor.ctc.Ctc;
-import de.gmasil.ctceditor.ctc.CtcBone;
-import de.gmasil.ctceditor.ctc.CtcChain;
-import de.gmasil.ctceditor.ctc.CtcIO;
+import de.gmasil.mhw.ctceditor.ctc.Ctc;
+import de.gmasil.mhw.ctceditor.ctc.CtcBone;
+import de.gmasil.mhw.ctceditor.ctc.CtcChain;
+import de.gmasil.mhw.ctceditor.ctc.CtcIO;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
