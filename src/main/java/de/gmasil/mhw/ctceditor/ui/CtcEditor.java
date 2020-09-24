@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
@@ -42,21 +43,34 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		// CTC tree left
 		treeViewer = new CtcTreeViewer(this, this);
 		JScrollPane scrollTree = new JScrollPane(treeViewer);
-		scrollTree.setMinimumSize(new Dimension(200, 0));
+		scrollTree.setMinimumSize(new Dimension(50, 0));
 		scrollTree.setPreferredSize(new Dimension(500, 500));
 
 		// editor panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		JScrollPane scrollMainPanel = new JScrollPane(mainPanel);
-		scrollMainPanel.setMinimumSize(new Dimension(200, 0));
+		scrollMainPanel.setMinimumSize(new Dimension(50, 0));
 		scrollMainPanel.setPreferredSize(new Dimension(500, 500));
 
+		// console
+		JTextArea console = new JTextArea();
+		JScrollPane scrollConsole = new JScrollPane(console);
+		scrollConsole.setMinimumSize(new Dimension(0, 50));
+		scrollConsole.setPreferredSize(new Dimension(200, 200));
+
 		// split
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
-		getContentPane().add(split, BorderLayout.CENTER);
+		JSplitPane splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
+		splitTreeAndMain.setMinimumSize(new Dimension(0, 50));
+		splitTreeAndMain.setPreferredSize(new Dimension(500, 500));
+		JSplitPane splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitTreeAndMain, scrollConsole);
+		getContentPane().add(splitTopBottom, BorderLayout.CENTER);
 
 		this.setVisible(true);
+
+		// set default devider locations
+		splitTreeAndMain.setDividerLocation(0.3D);
+		splitTopBottom.setDividerLocation(0.7D);
 	}
 
 	@Override
