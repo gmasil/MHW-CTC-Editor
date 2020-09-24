@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.gmasil.mhw.ctceditor.ctc.CtcIO;
+import de.gmasil.mhw.ctceditor.logging.SwingAppender;
 
 public class CtcEditor extends JFrame implements FileOpenedListener, MenuListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -58,6 +59,8 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		JScrollPane scrollConsole = new JScrollPane(console);
 		scrollConsole.setMinimumSize(new Dimension(0, 50));
 		scrollConsole.setPreferredSize(new Dimension(200, 200));
+		// register console to logger
+		SwingAppender.setConsole(console);
 
 		// split
 		JSplitPane splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
@@ -85,17 +88,6 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		}
 	}
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (Exception e) {
-				LOG.info("Could not set system look and feel");
-			}
-			new CtcEditor();
-		});
-	}
-
 	@Override
 	public void menuOpen() {
 		windowsFileChooser.openDialog();
@@ -104,5 +96,17 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	@Override
 	public void menuClose() {
 		treeViewer.setCtc(null);
+	}
+
+	public static void main(String[] args) {
+		LOG.debug("MHW CTC Editor is starting");
+		EventQueue.invokeLater(() -> {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+				LOG.info("Could not set system look and feel");
+			}
+			new CtcEditor();
+		});
 	}
 }

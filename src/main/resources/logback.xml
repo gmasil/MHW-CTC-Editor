@@ -1,0 +1,28 @@
+<configuration>
+	<!-- conversion -->
+	<conversionRule conversionWord="clevel" converterClass="de.gmasil.mhw.ctceditor.logging.ColoredLevelConverter" />
+
+	<!-- appenders -->
+	<appender name="GUI" class="de.gmasil.mhw.ctceditor.logging.SwingAppender">
+	</appender>
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{YYYY-MM-DD HH:mm:ss} [%-14clevel] %boldMagenta(%-20logger{20}): %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<file>ctc-editor.log</file>
+		<append>true</append>
+		<immediateFlush>true</immediateFlush>
+		<encoder>
+			<pattern>%date{YYYY-MM-DD HH:mm:ss.SSS} [%-5level] %-20logger{20}: %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- init -->
+	<root level="ALL">
+		<appender-ref ref="GUI" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</root>
+</configuration>

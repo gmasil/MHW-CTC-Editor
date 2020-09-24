@@ -18,6 +18,7 @@ public class Config extends Properties {
 	public static final String LAST_OPENED_FILE = "file.last-opened";
 
 	public Config() {
+		LOG.info("Loading config file " + CONFIG_FILE);
 		load();
 	}
 
