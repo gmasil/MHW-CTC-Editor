@@ -66,7 +66,9 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		JSplitPane splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
 		splitTreeAndMain.setMinimumSize(new Dimension(0, 50));
 		splitTreeAndMain.setPreferredSize(new Dimension(500, 500));
+		splitTreeAndMain.setResizeWeight(0.0f);
 		JSplitPane splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitTreeAndMain, scrollConsole);
+		splitTopBottom.setResizeWeight(1.0f);
 		getContentPane().add(splitTopBottom, BorderLayout.CENTER);
 
 		this.setVisible(true);
