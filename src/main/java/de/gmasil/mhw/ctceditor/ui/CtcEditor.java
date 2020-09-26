@@ -8,7 +8,6 @@ import java.lang.invoke.MethodHandles;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -56,6 +55,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 
 		// console
 		JTextArea console = new JTextArea();
+		console.setEditable(false);
 		JScrollPane scrollConsole = new JScrollPane(console);
 		scrollConsole.setMinimumSize(new Dimension(0, 50));
 		scrollConsole.setPreferredSize(new Dimension(200, 200));
@@ -80,11 +80,9 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	public void onFileOpened(File file) {
 		try {
 			treeViewer.setCtc(CtcIO.readFile(file));
-			JOptionPane.showMessageDialog(CtcEditor.this, "CTC file loaded.", "CTC Read", JOptionPane.OK_OPTION);
+			LOG.info("CTC file loaded successfully: " + file.getAbsolutePath());
 		} catch (Exception e) {
 			LOG.warn("Error while reading CTC file", e);
-			JOptionPane.showMessageDialog(CtcEditor.this, e.getMessage(), "Error while reading CTC file",
-					JOptionPane.OK_OPTION);
 		}
 	}
 
