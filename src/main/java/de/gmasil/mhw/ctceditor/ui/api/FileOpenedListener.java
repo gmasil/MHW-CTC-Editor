@@ -1,4 +1,4 @@
-package de.gmasil.mhw.ctceditor.ui;
+package de.gmasil.mhw.ctceditor.ui.api;
 
 import java.io.File;
 

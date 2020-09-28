@@ -6,7 +6,9 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
@@ -18,6 +20,8 @@ import de.gmasil.mhw.ctceditor.ctc.Ctc;
 import de.gmasil.mhw.ctceditor.ctc.CtcBone;
 import de.gmasil.mhw.ctceditor.ctc.CtcChain;
 import de.gmasil.mhw.ctceditor.ctc.CtcHeader;
+import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
+import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
 
 public class CtcTreeViewer extends JTree {
 	public static final String DEFAULT_ROOT_TEXT = "Drag a CTC file into this window or use the open menu";
@@ -25,11 +29,12 @@ public class CtcTreeViewer extends JTree {
 	private DefaultMutableTreeNode rootNode;
 	private Ctc ctc = null;
 
-	public CtcTreeViewer(Component parent, FileOpenedListener listener) {
-		this(parent, listener, new DefaultMutableTreeNode(DEFAULT_ROOT_TEXT));
+	public CtcTreeViewer(Component parent, FileOpenedListener fileListener, SelectionListener selectionListener) {
+		this(parent, fileListener, selectionListener, new DefaultMutableTreeNode(DEFAULT_ROOT_TEXT));
 	}
 
-	public CtcTreeViewer(Component parent, FileOpenedListener listener, DefaultMutableTreeNode rootNode) {
+	public CtcTreeViewer(Component parent, FileOpenedListener fileListener, SelectionListener selectionListener,
+			DefaultMutableTreeNode rootNode) {
 		super(rootNode);
 		this.rootNode = rootNode;
 		addTreeSelectionListener(e -> {
@@ -40,6 +45,9 @@ public class CtcTreeViewer extends JTree {
 					if (lastPathComponent instanceof DefaultMutableTreeNode) {
 						Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
 						clazz = userObject.getClass();
+					} else {
+						selectionListener.onIllegalSelection();
+						return;
 					}
 				} else if (getSelectionCount() > 1) {
 					for (TreePath selectionPath : getSelectionPaths()) {
@@ -48,23 +56,44 @@ public class CtcTreeViewer extends JTree {
 							Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
 							if (clazz != null) {
 								if (userObject.getClass() != clazz) {
-									// set panel to info
+									selectionListener.onIllegalSelection();
 									return;
 								}
 							}
 							clazz = userObject.getClass();
+						} else {
+							selectionListener.onIllegalSelection();
+							return;
 						}
 					}
 				}
 				if (clazz != null) {
 					if (clazz == CtcHeader.class) {
-
+						CtcHeader header = (CtcHeader) ((DefaultMutableTreeNode) getSelectionPath()
+								.getLastPathComponent()).getUserObject();
+						selectionListener.onHeaderSelected(header);
 					} else if (clazz == CtcChain.class) {
-
+						Set<CtcChain> list = new HashSet<>();
+						for (TreePath selectionPath : getSelectionPaths()) {
+							list.add((CtcChain) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent())
+									.getUserObject());
+						}
+						selectionListener.onChainSelected(list);
 					} else if (clazz == CtcBone.class) {
-
+						Set<CtcBone> list = new HashSet<>();
+						for (TreePath selectionPath : getSelectionPaths()) {
+							list.add((CtcBone) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent())
+									.getUserObject());
+						}
+						selectionListener.onBoneSelected(list);
+					} else {
+						selectionListener.onIllegalSelection();
 					}
+				} else {
+					selectionListener.onIllegalSelection();
 				}
+			} else {
+				selectionListener.onIllegalSelection();
 			}
 		});
 		setDropTarget(new DropTarget() {
@@ -79,7 +108,7 @@ public class CtcTreeViewer extends JTree {
 							Object transferObject = transferList.get(0);
 							if (transferObject instanceof File) {
 								File transferFile = (File) transferObject;
-								listener.onFileOpened(transferFile);
+								fileListener.onFileOpened(transferFile);
 							} else {
 								JOptionPane.showMessageDialog(parent, "You can only drop files here.",
 										"Drag and Drop Error", JOptionPane.OK_OPTION);

@@ -2,5 +2,5 @@
 .project
 .settings/
 target/
-editor.properties
+mhw-ctc-editor.properties
 *.log

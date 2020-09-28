@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.sun.javafx.application.PlatformImpl;
 
+import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 

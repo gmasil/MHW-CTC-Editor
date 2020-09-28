@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -21,10 +22,16 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.gmasil.mhw.ctceditor.ctc.CtcBone;
+import de.gmasil.mhw.ctceditor.ctc.CtcChain;
+import de.gmasil.mhw.ctceditor.ctc.CtcHeader;
 import de.gmasil.mhw.ctceditor.ctc.CtcIO;
 import de.gmasil.mhw.ctceditor.logging.SwingAppender;
+import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
+import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
+import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
 
-public class CtcEditor extends JFrame implements FileOpenedListener, MenuListener {
+public class CtcEditor extends JFrame implements FileOpenedListener, MenuListener, SelectionListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final int DIVIDER_SIZE = 4;
 
@@ -37,6 +44,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	private boolean showConsole = config.getShowConsole();
 	private boolean showConsoleOnStartup = showConsole;
 	private int consoleHeight;
+	private JPanel mainPanel;
 
 	public CtcEditor(String... args) {
 		this.setTitle("MHW CTC Editor");
@@ -51,13 +59,13 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		setJMenuBar(new EditorMenuBar(this, config));
 
 		// CTC tree left
-		treeViewer = new CtcTreeViewer(this, this);
+		treeViewer = new CtcTreeViewer(this, this, this);
 		JScrollPane scrollTree = new JScrollPane(treeViewer);
 		scrollTree.setMinimumSize(new Dimension(50, 0));
 		scrollTree.setPreferredSize(new Dimension(500, 500));
 
 		// editor panel
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		JScrollPane scrollMainPanel = new JScrollPane(mainPanel);
 		scrollMainPanel.setMinimumSize(new Dimension(50, 0));
@@ -195,5 +203,25 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 			}
 			new CtcEditor(args);
 		});
+	}
+
+	@Override
+	public void onHeaderSelected(CtcHeader header) {
+		LOG.debug("header selected");
+	}
+
+	@Override
+	public void onChainSelected(Set<CtcChain> chains) {
+		LOG.debug(chains.size() + " chains selected");
+	}
+
+	@Override
+	public void onBoneSelected(Set<CtcBone> bones) {
+		LOG.debug(bones.size() + " bones selected");
+	}
+
+	@Override
+	public void onIllegalSelection() {
+		LOG.debug("illegal selection");
 	}
 }

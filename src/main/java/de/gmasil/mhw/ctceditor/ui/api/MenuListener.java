@@ -1,4 +1,4 @@
-package de.gmasil.mhw.ctceditor.ui;
+package de.gmasil.mhw.ctceditor.ui.api;
 
 public interface MenuListener {
 	public void menuOpen();

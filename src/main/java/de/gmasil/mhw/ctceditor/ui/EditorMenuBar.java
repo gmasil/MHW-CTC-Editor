@@ -14,6 +14,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
+
 public class EditorMenuBar extends JMenuBar {
 	private static final int MENU_HEIGHT = 26;
 	private static final int ICON_SIZE = 18;
