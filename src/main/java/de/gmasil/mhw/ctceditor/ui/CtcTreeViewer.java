@@ -102,6 +102,10 @@ public class CtcTreeViewer extends JTree {
 		refreshTree();
 	}
 
+	public Ctc getCtc() {
+		return ctc;
+	}
+
 	private void refreshTree() {
 		if (ctc != null) {
 			rootNode.removeAllChildren();

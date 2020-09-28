@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class Config extends Properties {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-	private static final String CONFIG_FILE = "editor.properties";
+	private static final String CONFIG_FILE = "mhw-ctc-editor.properties";
 
 	private static final String LAST_OPENED_FILE = "file.last-opened";
 	private static final String SHOW_CONSOLE = "console.show";

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,6 +17,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	private boolean showConsoleOnStartup = showConsole;
 	private int consoleHeight;
 
-	public CtcEditor() {
+	public CtcEditor(String... args) {
 		this.setTitle("MHW CTC Editor");
 		this.setSize(1000, 620);
 		this.setResizable(true);
@@ -90,6 +92,10 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		// set default divider locations
 		splitTreeAndMain.setDividerLocation(0.3D);
 		splitTopBottom.setDividerLocation(0.7D);
+
+		if (args.length > 0) {
+			onFileOpened(new File(args[0]));
+		}
 	}
 
 	public void refreshUI() {
@@ -167,13 +173,27 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 
 	public static void main(String[] args) {
 		LOG.debug("MHW CTC Editor is starting");
+		try {
+			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {
+				LOG.debug("Running from IDE");
+			} else if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
+				File starterFile = new File(sourceLocation.getParentFile(), "MHW-CTC-Editor.cmd");
+				if (!starterFile.exists()) {
+					URL url = MethodHandles.lookup().lookupClass().getResource("/MHW-CTC-Editor.cmd");
+					FileUtils.copyURLToFile(url, starterFile);
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("Could not copy starter file", e);
+		}
 		EventQueue.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (Exception e) {
 				LOG.info("Could not set system look and feel");
 			}
-			new CtcEditor();
+			new CtcEditor(args);
 		});
 	}
 }
