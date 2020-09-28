@@ -15,7 +15,7 @@ public class WindowsFileChooser {
 	public WindowsFileChooser(Config config, FileOpenedListener listener) {
 		this.config = config;
 		this.listener = listener;
-		lastOpenedFile = new File(config.getProperty(Config.LAST_OPENED_FILE));
+		lastOpenedFile = new File(config.getLastOpenedFile());
 	}
 
 	public void openDialog() {
@@ -37,7 +37,7 @@ public class WindowsFileChooser {
 			File selectedFile = fileChooser.showOpenDialog(null);
 			if (selectedFile != null) {
 				lastOpenedFile = selectedFile;
-				config.setProperty(Config.LAST_OPENED_FILE, lastOpenedFile.getAbsolutePath());
+				config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
 				config.save();
 				listener.onFileOpened(selectedFile);
 			}

@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,22 +24,29 @@ import de.gmasil.mhw.ctceditor.logging.SwingAppender;
 
 public class CtcEditor extends JFrame implements FileOpenedListener, MenuListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+	private static final int DIVIDER_SIZE = 4;
 
 	private CtcTreeViewer treeViewer;
 	private Config config = new Config();
 	private WindowsFileChooser windowsFileChooser = new WindowsFileChooser(config, this);
+	private JScrollPane scrollConsole;
+	private JSplitPane splitTreeAndMain;
+	private JSplitPane splitTopBottom;
+	private boolean showConsole = config.getShowConsole();
+	private boolean showConsoleOnStartup = showConsole;
+	private int consoleHeight;
 
 	public CtcEditor() {
 		this.setTitle("MHW CTC Editor");
 		this.setSize(1000, 620);
 		this.setResizable(true);
-		this.setLocation(50, 50);
 		this.setLocationByPlatform(true);
+		this.setMinimumSize(new Dimension(300, 200));
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout());
 
 		// menu bar
-		setJMenuBar(new EditorMenuBar(this));
+		setJMenuBar(new EditorMenuBar(this, config));
 
 		// CTC tree left
 		treeViewer = new CtcTreeViewer(this, this);
@@ -56,26 +64,38 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		// console
 		JTextArea console = new JTextArea();
 		console.setEditable(false);
-		JScrollPane scrollConsole = new JScrollPane(console);
+		scrollConsole = new JScrollPane(console);
+		scrollConsole.setBorder(BorderFactory.createEmptyBorder());
 		scrollConsole.setMinimumSize(new Dimension(0, 50));
 		scrollConsole.setPreferredSize(new Dimension(200, 200));
 		// register console to logger
 		SwingAppender.setConsole(console);
 
 		// split
-		JSplitPane splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
+		splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
+		splitTreeAndMain.setDividerSize(DIVIDER_SIZE);
+		splitTreeAndMain.setBorder(BorderFactory.createEmptyBorder());
 		splitTreeAndMain.setMinimumSize(new Dimension(0, 50));
 		splitTreeAndMain.setPreferredSize(new Dimension(500, 500));
 		splitTreeAndMain.setResizeWeight(0.0f);
-		JSplitPane splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitTreeAndMain, scrollConsole);
+		splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitTreeAndMain, scrollConsole);
+		splitTopBottom.setDividerSize(DIVIDER_SIZE);
+		splitTopBottom.setBorder(BorderFactory.createEmptyBorder());
 		splitTopBottom.setResizeWeight(1.0f);
-		getContentPane().add(splitTopBottom, BorderLayout.CENTER);
+		setContentPane(splitTopBottom);
 
 		this.setVisible(true);
+		updateConsole();
 
-		// set default devider locations
+		// set default divider locations
 		splitTreeAndMain.setDividerLocation(0.3D);
 		splitTopBottom.setDividerLocation(0.7D);
+	}
+
+	public void refreshUI() {
+		invalidate();
+		validate();
+		repaint();
 	}
 
 	@Override
@@ -94,8 +114,55 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	}
 
 	@Override
+	public void menuSave() {
+		// TODO: implement save operation
+	}
+
+	@Override
+	public void menuSaveAs() {
+		// TODO: implement save operation
+	}
+
+	@Override
 	public void menuClose() {
 		treeViewer.setCtc(null);
+	}
+
+	@Override
+	public void menuExit() {
+		System.exit(0);
+	}
+
+	@Override
+	public boolean menuToggleConsole() {
+		showConsole = !showConsole;
+		updateConsole();
+		config.setShowConsole(showConsole);
+		config.save();
+		return showConsole;
+	}
+
+	public void updateConsole() {
+		if (showConsole) {
+			setContentPane(splitTopBottom);
+			splitTopBottom.setLeftComponent(splitTreeAndMain);
+			if (showConsoleOnStartup) {
+				int dividerLocation = getHeight() - consoleHeight;
+				if (dividerLocation < 50) {
+					dividerLocation = 50;
+				}
+				refreshUI();
+				splitTopBottom.setDividerLocation(dividerLocation);
+			} else {
+				refreshUI();
+				splitTopBottom.setDividerLocation(0.7D);
+				showConsoleOnStartup = true;
+			}
+		} else {
+			consoleHeight = getHeight() - splitTopBottom.getDividerLocation();
+			setContentPane(splitTreeAndMain);
+			refreshUI();
+		}
 	}
 
 	public static void main(String[] args) {

@@ -15,7 +15,8 @@ public class Config extends Properties {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final String CONFIG_FILE = "editor.properties";
 
-	public static final String LAST_OPENED_FILE = "file.last-opened";
+	private static final String LAST_OPENED_FILE = "file.last-opened";
+	private static final String SHOW_CONSOLE = "console.show";
 
 	public Config() {
 		LOG.info("Loading config file " + CONFIG_FILE);
@@ -30,8 +31,6 @@ public class Config extends Properties {
 			} catch (IOException e) {
 				LOG.warn("Error while loading configuration", e);
 			}
-		} else {
-			reset();
 		}
 	}
 
@@ -43,7 +42,19 @@ public class Config extends Properties {
 		}
 	}
 
-	public void reset() {
-		setProperty(LAST_OPENED_FILE, "");
+	public String getLastOpenedFile() {
+		return getProperty(LAST_OPENED_FILE, "");
+	}
+
+	public void setLastOpenedFile(String lastOpenedFile) {
+		setProperty(LAST_OPENED_FILE, lastOpenedFile);
+	}
+
+	public boolean getShowConsole() {
+		return getProperty(SHOW_CONSOLE, "true").equals("true");
+	}
+
+	public void setShowConsole(boolean showConsole) {
+		setProperty(SHOW_CONSOLE, "" + showConsole);
 	}
 }

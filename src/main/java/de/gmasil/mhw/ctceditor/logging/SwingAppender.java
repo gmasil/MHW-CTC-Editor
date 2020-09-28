@@ -40,7 +40,8 @@ public class SwingAppender extends AppenderBase<ILoggingEvent> {
 			}
 		}
 		if (console != null) {
-			console.setText(console.getText() + msg);
+			console.append(msg.toString());
+			console.setCaretPosition(console.getDocument().getLength());
 		} else {
 			synchronized (cache) {
 				cache.append(msg);
