@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -12,14 +14,17 @@ import ch.qos.logback.core.AppenderBase;
 
 public class SwingAppender extends AppenderBase<ILoggingEvent> {
 	private static JTextArea console = null;
+	private static JScrollPane scroller = null;
 	private static StringBuilder cache = new StringBuilder();
 	public static boolean printFullStackTrace = true;
 
-	public static void setConsole(JTextArea console) {
+	public static void setConsole(JTextArea console, JScrollPane scroller) {
 		SwingAppender.console = console;
+		SwingAppender.scroller = scroller;
 		synchronized (cache) {
 			console.setText(cache.toString());
 			cache.setLength(0);
+			console.setCaretPosition(console.getDocument().getLength());
 		}
 	}
 
@@ -41,7 +46,10 @@ public class SwingAppender extends AppenderBase<ILoggingEvent> {
 		}
 		if (console != null) {
 			console.append(msg.toString());
-			console.setCaretPosition(console.getDocument().getLength());
+			JScrollBar bar = scroller.getVerticalScrollBar();
+			if (bar.getValue() > bar.getMaximum() - bar.getHeight() - 20) {
+				console.setCaretPosition(console.getDocument().getLength());
+			}
 		} else {
 			synchronized (cache) {
 				cache.append(msg);

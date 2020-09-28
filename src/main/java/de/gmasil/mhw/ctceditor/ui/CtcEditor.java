@@ -69,7 +69,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		scrollConsole.setMinimumSize(new Dimension(0, 50));
 		scrollConsole.setPreferredSize(new Dimension(200, 200));
 		// register console to logger
-		SwingAppender.setConsole(console);
+		SwingAppender.setConsole(console, scrollConsole);
 
 		// split
 		splitTreeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollTree, scrollMainPanel);
