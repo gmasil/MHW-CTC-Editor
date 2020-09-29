@@ -17,9 +17,15 @@
 		<logback.version>1.2.3</logback.version>
 		<commons.version>2.8.0</commons.version>
 		<!-- plugin versions -->
+		<surefire-plugin.version>2.22.2</surefire-plugin.version>
+		<failsafe-plugin.version>2.22.2</failsafe-plugin.version>
+		<jacoco-plugin.version>0.8.6</jacoco-plugin.version>
 		<resources-plugin.version>3.2.0</resources-plugin.version>
 		<assembly-plugin.version>3.3.0</assembly-plugin.version>
 		<copy-rename-plugin.version>1.0.1</copy-rename-plugin.version>
+		<!-- skip test config -->
+		<skipITs>true</skipITs>
+		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 	</properties>
 
 	<dependencies>
@@ -40,8 +46,82 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>full-build</id>
+			<properties>
+				<skipITs>false</skipITs>
+				<skip.surefire.tests>false</skip.surefire.tests>
+			</properties>
+		</profile>
+		<profile>
+			<id>integration-tests-only</id>
+			<properties>
+				<skipITs>false</skipITs>
+				<skip.surefire.tests>true</skip.surefire.tests>
+			</properties>
+		</profile>
+		<profile>
+			<id>create-docs</id>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
+			<!-- surefire -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire-plugin.version}</version>
+				<configuration>
+					<skipTests>${skip.surefire.tests}</skipTests>
+					<argLine>${argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
+				</configuration>
+			</plugin>
+			<!-- failsafe -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${failsafe-plugin.version}</version>
+				<configuration>
+					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+				</configuration>
+			</plugin>
+			<!-- jacoco -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-plugin.version}</version>
+				<executions>
+					<!-- unit tests -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco.exec</destFile>
+						</configuration>
+					</execution>
+					<!-- integration tests -->
+					<execution>
+						<id>pre-integration-test</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco-it.exec</destFile>
+						</configuration>
+					</execution>
+					<!-- report -->
+					<execution>
+						<id>report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- copy starter file -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${resources-plugin.version}</version>
@@ -66,6 +146,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- build fat jar -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${assembly-plugin.version}</version><!--$NO-MVN-MAN-VER$ -->
@@ -89,6 +170,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- copy fat jar to release folder -->
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
@@ -109,4 +191,15 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<url>https://nexus.gmasil.de/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus</id>
+			<url>https://nexus.gmasil.de/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
