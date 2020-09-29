@@ -42,63 +42,66 @@ public class CtcTreeViewer extends JTree {
 			DefaultMutableTreeNode rootNode) {
 		super(rootNode);
 		this.rootNode = rootNode;
+		setupSelectionListener(selectionListener);
+		setupDragAndDrop(parent, fileListener);
+		refreshTree();
+	}
+
+	private void setupSelectionListener(SelectionListener selectionListener) {
 		addTreeSelectionListener(e -> {
 			if (getSelectionPaths() != null) {
-				Class<?> clazz = null;
-				if (getSelectionCount() == 1) {
-					Object lastPathComponent = getSelectionPath().getLastPathComponent();
-					if (lastPathComponent instanceof DefaultMutableTreeNode) {
-						Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
-						clazz = userObject.getClass();
-					} else {
-						selectionListener.onIllegalSelection();
-						return;
-					}
-				} else if (getSelectionCount() > 1) {
-					for (TreePath selectionPath : getSelectionPaths()) {
-						Object lastPathComponent = selectionPath.getLastPathComponent();
-						if (lastPathComponent instanceof DefaultMutableTreeNode) {
-							Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
-							if (clazz != null && userObject.getClass() != clazz) {
-								selectionListener.onIllegalSelection();
-								return;
-							}
-							clazz = userObject.getClass();
-						} else {
-							selectionListener.onIllegalSelection();
-							return;
-						}
-					}
-				}
+				Class<?> clazz = getSelectedClass();
 				if (clazz != null) {
-					if (clazz == CtcHeader.class) {
-						CtcHeader header = (CtcHeader) ((DefaultMutableTreeNode) getSelectionPath()
-								.getLastPathComponent()).getUserObject();
-						selectionListener.onHeaderSelected(header);
-					} else if (clazz == CtcChain.class) {
-						Set<CtcChain> list = new HashSet<>();
-						for (TreePath selectionPath : getSelectionPaths()) {
-							list.add((CtcChain) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent())
-									.getUserObject());
-						}
-						selectionListener.onChainSelected(list);
-					} else if (clazz == CtcBone.class) {
-						Set<CtcBone> list = new HashSet<>();
-						for (TreePath selectionPath : getSelectionPaths()) {
-							list.add((CtcBone) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent())
-									.getUserObject());
-						}
-						selectionListener.onBoneSelected(list);
-					} else {
-						selectionListener.onIllegalSelection();
-					}
-				} else {
-					selectionListener.onIllegalSelection();
+					performSelection(selectionListener, clazz);
+					return;
 				}
-			} else {
-				selectionListener.onIllegalSelection();
 			}
+			selectionListener.onIllegalSelection();
 		});
+	}
+
+	private void performSelection(SelectionListener selectionListener, Class<?> clazz) {
+		if (clazz == CtcHeader.class) {
+			CtcHeader header = (CtcHeader) ((DefaultMutableTreeNode) getSelectionPath().getLastPathComponent())
+					.getUserObject();
+			selectionListener.onHeaderSelected(header);
+		} else if (clazz == CtcChain.class) {
+			Set<CtcChain> list = new HashSet<>();
+			for (TreePath selectionPath : getSelectionPaths()) {
+				list.add((CtcChain) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent()).getUserObject());
+			}
+			selectionListener.onChainSelected(list);
+		} else if (clazz == CtcBone.class) {
+			Set<CtcBone> list = new HashSet<>();
+			for (TreePath selectionPath : getSelectionPaths()) {
+				list.add((CtcBone) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent()).getUserObject());
+			}
+			selectionListener.onBoneSelected(list);
+		} else {
+			selectionListener.onIllegalSelection();
+		}
+	}
+
+	private Class<?> getSelectedClass() {
+		Class<?> clazz = null;
+		if (getSelectionCount() > 0) {
+			for (TreePath selectionPath : getSelectionPaths()) {
+				Object lastPathComponent = selectionPath.getLastPathComponent();
+				if (lastPathComponent instanceof DefaultMutableTreeNode) {
+					Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
+					if (clazz != null && userObject.getClass() != clazz) {
+						return null;
+					}
+					clazz = userObject.getClass();
+				} else {
+					return null;
+				}
+			}
+		}
+		return clazz;
+	}
+
+	private void setupDragAndDrop(Component parent, FileOpenedListener fileListener) {
 		setDropTarget(new DropTarget() {
 			@Override
 			public synchronized void drop(DropTargetDropEvent evt) {
@@ -126,7 +129,6 @@ public class CtcTreeViewer extends JTree {
 				}
 			}
 		});
-		refreshTree();
 	}
 
 	public void setCtc(Ctc ctc) {
