@@ -13,9 +13,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public class EditorMenuBarIT {
+class EditorMenuBarIT {
 	@Test
-	public void testMenuBarEntries() {
+	void testMenuBarEntries() {
 		Config configMock = Mockito.mock(Config.class);
 		Mockito.when(configMock.getShowConsole()).thenReturn(true);
 		JMenuBar menu = new EditorMenuBar(null, configMock);
@@ -25,7 +25,7 @@ public class EditorMenuBarIT {
 	}
 
 	@Test
-	public void testFileMenuEntries() {
+	void testFileMenuEntries() {
 		Config configMock = Mockito.mock(Config.class);
 		Mockito.when(configMock.getShowConsole()).thenReturn(true);
 		JMenuBar menu = new EditorMenuBar(null, configMock);
@@ -34,7 +34,7 @@ public class EditorMenuBarIT {
 	}
 
 	@Test
-	public void testViewMenuEntries() {
+	void testViewMenuEntries() {
 		Config configMock = Mockito.mock(Config.class);
 		Mockito.when(configMock.getShowConsole()).thenReturn(true);
 		JMenuBar menu = new EditorMenuBar(null, configMock);

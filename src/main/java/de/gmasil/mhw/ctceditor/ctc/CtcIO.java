@@ -33,8 +33,8 @@ public class CtcIO {
 	}
 
 	public static void write(Ctc ctc, File file) throws IOException {
-		OutputStream os = new FileOutputStream(file);
-		os.write(ctc.getBytes());
-		os.close();
+		try (OutputStream os = new FileOutputStream(file)) {
+			os.write(ctc.getBytes());
+		}
 	}
 }

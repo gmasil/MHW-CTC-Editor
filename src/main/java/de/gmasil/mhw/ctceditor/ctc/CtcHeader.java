@@ -1,9 +1,10 @@
 package de.gmasil.mhw.ctceditor.ctc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class CtcHeader {
+public class CtcHeader implements Serializable {
 	private String fileType;
 	private int[] unknownConstantIntSet = new int[3];
 	private int boneChainCount;

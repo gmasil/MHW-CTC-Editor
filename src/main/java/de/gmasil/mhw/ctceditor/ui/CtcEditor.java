@@ -116,7 +116,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	public void onFileOpened(File file) {
 		try {
 			treeViewer.setCtc(CtcIO.readFile(file));
-			LOG.info("CTC file loaded successfully: " + file.getAbsolutePath());
+			LOG.info("CTC file loaded successfully: {}", file.getAbsolutePath());
 		} catch (Exception e) {
 			LOG.warn("Error while reading CTC file", e);
 		}
@@ -186,12 +186,12 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 
 	@Override
 	public void onChainSelected(Set<CtcChain> chains) {
-		LOG.debug(chains.size() + " chains selected");
+		LOG.debug("{} chains selected", chains.size());
 	}
 
 	@Override
 	public void onBoneSelected(Set<CtcBone> bones) {
-		LOG.debug(bones.size() + " bones selected");
+		LOG.debug("{} bones selected", bones.size());
 	}
 
 	@Override

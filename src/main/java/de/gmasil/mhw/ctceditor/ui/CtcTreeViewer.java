@@ -59,11 +59,9 @@ public class CtcTreeViewer extends JTree {
 						Object lastPathComponent = selectionPath.getLastPathComponent();
 						if (lastPathComponent instanceof DefaultMutableTreeNode) {
 							Object userObject = ((DefaultMutableTreeNode) lastPathComponent).getUserObject();
-							if (clazz != null) {
-								if (userObject.getClass() != clazz) {
-									selectionListener.onIllegalSelection();
-									return;
-								}
+							if (clazz != null && userObject.getClass() != clazz) {
+								selectionListener.onIllegalSelection();
+								return;
 							}
 							clazz = userObject.getClass();
 						} else {
@@ -162,7 +160,7 @@ public class CtcTreeViewer extends JTree {
 				bonesNode.add(boneNode);
 			}
 		} else {
-			rootNode.setUserObject("Drag a CTC file into this window or use the open menu");
+			rootNode.setUserObject(DEFAULT_ROOT_TEXT);
 			rootNode.removeAllChildren();
 		}
 		DefaultTreeModel model = (DefaultTreeModel) getModel();

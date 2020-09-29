@@ -1,11 +1,12 @@
 package de.gmasil.mhw.ctceditor.ctc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CtcChain {
+public class CtcChain implements Serializable {
 	private int chainLength; // Chain Length
 	private byte collision; // Usually a number between 0 and 10
 	private byte weightiness; // Weightiness

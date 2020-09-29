@@ -16,7 +16,7 @@ public class SwingAppender extends AppenderBase<ILoggingEvent> {
 	private static JTextArea console = null;
 	private static JScrollPane scroller = null;
 	private static StringBuilder cache = new StringBuilder();
-	public static boolean printFullStackTrace = true;
+	private static boolean printFullStackTrace = true;
 
 	public static void setConsole(JTextArea console, JScrollPane scroller) {
 		SwingAppender.console = console;

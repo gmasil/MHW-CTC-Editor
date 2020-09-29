@@ -1,6 +1,7 @@
 package de.gmasil.mhw.ctceditor.ui;
 
 import java.io.File;
+import java.io.Serializable;
 
 import com.sun.javafx.application.PlatformImpl;
 
@@ -8,7 +9,7 @@ import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class WindowsFileChooser {
+public class WindowsFileChooser implements Serializable {
 	private Config config;
 	private FileOpenedListener listener;
 	private File lastOpenedFile = null;

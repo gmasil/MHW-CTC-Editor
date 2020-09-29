@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -14,9 +15,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
 
 public class EditorMenuBar extends JMenuBar {
+	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final int MENU_HEIGHT = 26;
 	private static final int ICON_SIZE = 18;
 
@@ -25,84 +30,81 @@ public class EditorMenuBar extends JMenuBar {
 		JMenu menuFile = new JMenu("File");
 		menuFile.setMnemonic(KeyEvent.VK_F);
 		add(menuFile);
-		// file menu open
-		{
-			JMenuItem menuOpen = createJMenuItem("Open ...");
-			menuOpen.setMnemonic(KeyEvent.VK_O);
-			menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-			menuOpen.addActionListener(event -> {
-				listener.menuOpen();
-			});
-			setIcon(menuOpen, "folder");
-			menuFile.add(menuOpen);
-		}
-		// file menu save
-		{
-			JMenuItem menuSave = createJMenuItem("Save");
-			menuSave.setMnemonic(KeyEvent.VK_S);
-			menuSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-			menuSave.addActionListener(event -> {
-				listener.menuSave();
-			});
-			setIcon(menuSave, "save");
-			menuFile.add(menuSave);
-		}
-		// file menu save as
-		{
-			JMenuItem menuSaveAs = createJMenuItem("Save as ...");
-			menuSaveAs.setMnemonic(KeyEvent.VK_A);
-			menuSaveAs.setDisplayedMnemonicIndex(5);
-			menuSaveAs.addActionListener(event -> {
-				listener.menuSaveAs();
-			});
-			menuFile.add(menuSaveAs);
-		}
-		// file menu close
-		{
-			JMenuItem menuClose = createJMenuItem("Close");
-			menuClose.setMnemonic(KeyEvent.VK_C);
-			menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
-			menuClose.addActionListener(event -> {
-				listener.menuClose();
-			});
-			setIcon(menuClose, "close");
-			menuFile.add(menuClose);
-		}
-		// separator
+		addOpenMenu(menuFile, listener);
+		addSaveMenu(menuFile, listener);
+		addSaveAsMenu(menuFile, listener);
+		addCloseMenu(menuFile, listener);
 		menuFile.addSeparator();
-		// file menu exit
-		{
-			JMenuItem menuExit = createJMenuItem("Exit");
-			menuExit.setMnemonic(KeyEvent.VK_X);
-			menuExit.addActionListener(event -> {
-				listener.menuExit();
-			});
-			setIcon(menuExit, "exit");
-			menuFile.add(menuExit);
-		}
+		addExitMenu(menuFile, listener);
 		// top menu view
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
 		add(menuView);
-		// view menu console
-		{
-			JMenuItem menuConsole = createJMenuItem("Show console");
-			menuConsole.setMnemonic(KeyEvent.VK_C);
-			menuConsole.addActionListener(event -> {
-				if (listener.menuToggleConsole()) {
-					setIcon(menuConsole, "check_box_checked");
-				} else {
-					setIcon(menuConsole, "check_box_blank");
-				}
-			});
-			if (config.getShowConsole()) {
+		addShowConsoleMenu(menuView, listener, config);
+	}
+
+	private void addShowConsoleMenu(JMenu menuView, MenuListener listener, Config config) {
+		JMenuItem menuConsole = createJMenuItem("Show console");
+		menuConsole.setMnemonic(KeyEvent.VK_C);
+		menuConsole.addActionListener(event -> {
+			if (listener.menuToggleConsole()) {
 				setIcon(menuConsole, "check_box_checked");
 			} else {
 				setIcon(menuConsole, "check_box_blank");
 			}
-			menuView.add(menuConsole);
+		});
+		if (config.getShowConsole()) {
+			setIcon(menuConsole, "check_box_checked");
+		} else {
+			setIcon(menuConsole, "check_box_blank");
 		}
+		menuView.add(menuConsole);
 	}
+
+	private void addOpenMenu(JMenu menuFile, MenuListener listener) {
+		JMenuItem menuOpen = createJMenuItem("Open ...");
+		menuOpen.setMnemonic(KeyEvent.VK_O);
+		menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		menuOpen.addActionListener(event -> listener.menuOpen());
+		setIcon(menuOpen, "folder");
+		menuFile.add(menuOpen);
+	}
+
+	private void addSaveMenu(JMenu menuFile, MenuListener listener) {
+		JMenuItem menuSave = createJMenuItem("Save");
+		menuSave.setMnemonic(KeyEvent.VK_S);
+		menuSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuSave.addActionListener(event -> listener.menuSave());
+		setIcon(menuSave, "save");
+		menuFile.add(menuSave);
+	}
+
+	private void addSaveAsMenu(JMenu menuFile, MenuListener listener) {
+		JMenuItem menuSaveAs = createJMenuItem("Save as ...");
+		menuSaveAs.setMnemonic(KeyEvent.VK_A);
+		menuSaveAs.setDisplayedMnemonicIndex(5);
+		menuSaveAs.addActionListener(event -> listener.menuSaveAs());
+		menuFile.add(menuSaveAs);
+	}
+
+	private void addCloseMenu(JMenu menuFile, MenuListener listener) {
+		JMenuItem menuClose = createJMenuItem("Close");
+		menuClose.setMnemonic(KeyEvent.VK_C);
+		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+		menuClose.addActionListener(event -> listener.menuClose());
+		setIcon(menuClose, "close");
+		menuFile.add(menuClose);
+	}
+
+	private void addExitMenu(JMenu menuFile, MenuListener listener) {
+		JMenuItem menuExit = createJMenuItem("Exit");
+		menuExit.setMnemonic(KeyEvent.VK_X);
+		menuExit.addActionListener(event -> listener.menuExit());
+		setIcon(menuExit, "exit");
+		menuFile.add(menuExit);
+	}
+
+	// helpers
 
 	private JMenuItem createJMenuItem(String text) {
 		JMenuItem menuItem = new SizedMenuItem(text);
@@ -122,6 +124,7 @@ public class EditorMenuBar extends JMenuBar {
 			ImageIcon icon = new ImageIcon(resizedImage);
 			menu.setIcon(icon);
 		} catch (Exception e) {
+			LOG.warn("Could not load menu icon, ignoring", e);
 		}
 	}
 

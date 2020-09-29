@@ -1,9 +1,10 @@
 package de.gmasil.mhw.ctceditor.ctc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class CtcBone {
+public class CtcBone implements Serializable {
 	private float negMaxX; // Negative X axis maximum in radians
 	private float negMaxY; // Negative Y axis maximum in radians
 	private float negMaxZ; // Negative Z axis maximum in radians

@@ -1,12 +1,13 @@
 package de.gmasil.mhw.ctceditor.ctc;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Ctc {
+public class Ctc implements Serializable {
 	public static final int HEADER_LENGTH = 80;
 	public static final int CHAIN_LENGTH = 80;
 	public static final int BONE_LENGTH = 112;
