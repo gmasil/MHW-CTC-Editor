@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public class EditorMenuBarTest {
+public class EditorMenuBarIT {
 	@Test
 	public void testMenuBarEntries() {
 		Config configMock = Mockito.mock(Config.class);
