@@ -25,11 +25,6 @@ pipeline {
         sh 'xvfb-run mvn verify --fail-at-end -P integration-tests-only'
       }
     }
-    stage('deploy') {
-      steps {
-        sh 'mvn deploy -DskipTests'
-      }
-    }
     stage('analyze') {
       environment {
         SONAR_TOKEN = credentials('SONAR_TOKEN')
@@ -42,7 +37,7 @@ pipeline {
   post {
     always {
       junit '**/surefire-reports/**/*.xml'
-      archiveArtifacts artifacts: '**/release/*', fingerprint: true, allowEmptyArchive: true
+      archiveArtifacts artifacts: '**/target/*.zip', fingerprint: true, allowEmptyArchive: true
     }
   }
 }
