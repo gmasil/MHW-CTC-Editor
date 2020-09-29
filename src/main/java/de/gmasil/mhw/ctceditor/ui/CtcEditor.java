@@ -179,32 +179,6 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		}
 	}
 
-	public static void main(String[] args) {
-		LOG.debug("MHW CTC Editor is starting");
-		try {
-			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {
-				LOG.debug("Running from IDE");
-			} else if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
-				File starterFile = new File(sourceLocation.getParentFile(), "MHW-CTC-Editor.cmd");
-				if (!starterFile.exists()) {
-					URL url = MethodHandles.lookup().lookupClass().getResource("/MHW-CTC-Editor.cmd");
-					FileUtils.copyURLToFile(url, starterFile);
-				}
-			}
-		} catch (Exception e) {
-			LOG.warn("Could not copy starter file", e);
-		}
-		EventQueue.invokeLater(() -> {
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (Exception e) {
-				LOG.info("Could not set system look and feel");
-			}
-			new CtcEditor(args);
-		});
-	}
-
 	@Override
 	public void onHeaderSelected(CtcHeader header) {
 		LOG.debug("header selected");
@@ -223,5 +197,35 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	@Override
 	public void onIllegalSelection() {
 		LOG.debug("illegal selection");
+	}
+
+	public static void main(String[] args) {
+		LOG.debug("MHW CTC Editor is starting");
+		copyStarterFile();
+		EventQueue.invokeLater(() -> {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+				LOG.info("Could not set system look and feel");
+			}
+			new CtcEditor(args);
+		});
+	}
+
+	public static void copyStarterFile() {
+		try {
+			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {
+				LOG.debug("Running from IDE");
+			} else if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
+				File starterFile = new File(sourceLocation.getParentFile(), "MHW-CTC-Editor.cmd");
+				if (!starterFile.exists()) {
+					URL url = MethodHandles.lookup().lookupClass().getResource("/MHW-CTC-Editor.cmd");
+					FileUtils.copyURLToFile(url, starterFile);
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("Could not copy starter file", e);
+		}
 	}
 }

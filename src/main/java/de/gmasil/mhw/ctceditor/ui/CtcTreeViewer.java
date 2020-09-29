@@ -6,6 +6,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.gmasil.mhw.ctceditor.ctc.Ctc;
 import de.gmasil.mhw.ctceditor.ctc.CtcBone;
 import de.gmasil.mhw.ctceditor.ctc.CtcChain;
@@ -24,6 +28,7 @@ import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
 
 public class CtcTreeViewer extends JTree {
+	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	public static final String DEFAULT_ROOT_TEXT = "Drag a CTC file into this window or use the open menu";
 
 	private DefaultMutableTreeNode rootNode;
@@ -118,8 +123,8 @@ public class CtcTreeViewer extends JTree {
 									"Drag and Drop Error", JOptionPane.OK_OPTION);
 						}
 					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
+				} catch (Exception e) {
+					LOG.warn("Error during drag and drop", e);
 				}
 			}
 		});
