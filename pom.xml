@@ -156,7 +156,7 @@
 				<executions>
 					<!-- unit tests -->
 					<execution>
-						<id>pre-unit-test</id>
+						<id>prepare</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
@@ -164,9 +164,20 @@
 							<destFile>${project.build.directory}/jacoco.exec</destFile>
 						</configuration>
 					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco/</outputDirectory>
+						</configuration>
+					</execution>
 					<!-- integration tests -->
 					<execution>
-						<id>pre-integration-test</id>
+						<id>prepare-it</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>prepare-agent</goal>
@@ -175,35 +186,15 @@
 							<destFile>${project.build.directory}/jacoco-it.exec</destFile>
 						</configuration>
 					</execution>
-					<!-- merge -->
 					<execution>
-						<id>merge</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>merge</goal>
-						</goals>
-						<configuration>
-							<fileSets>
-								<fileSet>
-									<directory>${project.build.directory}</directory>
-									<includes>
-										<include>*.exec</include>
-									</includes>
-								</fileSet>
-							</fileSets>
-							<destFile>${project.build.directory}/jacoco-all.exec</destFile>
-						</configuration>
-					</execution>
-					<!-- report -->
-					<execution>
-						<id>report</id>
+						<id>report-it</id>
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<dataFile>${project.build.directory}/jacoco-all.exec</dataFile>
-							<outputDirectory>${project.build.directory}/jacoco-merged/</outputDirectory>
+							<dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it/</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
