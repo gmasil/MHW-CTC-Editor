@@ -7,7 +7,7 @@
 	</appender>
 	<appender name="CONSOLE" class="de.gmasil.mhw.ctceditor.logging.AnsiAwareConsoleAppender">
 		<encoder>
-			<pattern>%date{YYYY-MM-DD HH:mm:ss} [%-14clevel] %boldMagenta(%-20logger{20}): %msg%n</pattern>
+			<pattern>%date{YYYY-MM-DD HH:mm:ss} [%-14clevel] %boldMagenta(%-20.20logger{20}): %msg%n</pattern>
 		</encoder>
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -15,7 +15,7 @@
 		<append>true</append>
 		<immediateFlush>true</immediateFlush>
 		<encoder>
-			<pattern>%date{YYYY-MM-DD HH:mm:ss.SSS} [%-5level] %-20logger{20}: %msg%n</pattern>
+			<pattern>%date{YYYY-MM-DD HH:mm:ss.SSS} [%-5level] %-50.50logger{50}: %msg%n</pattern>
 		</encoder>
 	</appender>
 

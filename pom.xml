@@ -8,6 +8,7 @@
 	<description>Editor for CTC files from Monster Hunter World to manipulate physical effects</description>
 
 	<properties>
+		<starter.class>de.gmasil.mhw.ctceditor.CtcEditorStarter</starter.class>
 		<java.version>11</java.version>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -244,7 +245,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.gmasil.mhw.ctceditor.ui.CtcEditor</mainClass>
+									<mainClass>${starter.class}</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
