@@ -1,6 +1,5 @@
 package de.gmasil.mhw.ctceditor.ui.panel;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import de.gmasil.mhw.ctceditor.ctc.CtcHeader;
@@ -10,13 +9,11 @@ public class CtcHeaderEditor extends CtcEditorPanel {
 	private boolean dataChanged = false;
 
 	public CtcHeaderEditor(CtcHeader header) {
+		super("CTC Header", true);
 		this.header = header;
-		add(new JLabel("CTC Header"));
-		JButton btnChangeData = new JButton("change");
-		btnChangeData.addActionListener(e -> {
-			dataChanged = true;
-		});
-		add(btnChangeData);
+		for (int i = 0; i < 40; i++) {
+			getMainPanel().add(new JLabel("test"));
+		}
 	}
 
 	@Override

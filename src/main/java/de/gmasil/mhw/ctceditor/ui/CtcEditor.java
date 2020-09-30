@@ -2,6 +2,8 @@ package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
@@ -35,6 +37,8 @@ import de.gmasil.mhw.ctceditor.ui.panel.CtcHeaderEditor;
 
 public class CtcEditor extends JFrame
 		implements FileOpenedListener, MenuListener, SelectionListener, AllowSelectionCallback {
+	private static final String SELECT_TYPE_INFO = "Please do not select items of different types";
+	private static final String SELECT_INFO = "Select one or multiple objects on the left";
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final int DIVIDER_SIZE = 4;
 
@@ -55,7 +59,14 @@ public class CtcEditor extends JFrame
 		this.setResizable(true);
 		this.setLocationByPlatform(true);
 		this.setMinimumSize(new Dimension(300, 200));
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				menuExit();
+			}
+		});
+
 		getContentPane().setLayout(new BorderLayout());
 
 		// menu bar
@@ -91,7 +102,7 @@ public class CtcEditor extends JFrame
 		setContentPane(splitTopBottom);
 
 		// main panel
-		setMainText("lalelu");
+		setMainText("");
 
 		this.setVisible(true);
 		updateConsole();
@@ -118,6 +129,7 @@ public class CtcEditor extends JFrame
 		try {
 			treeViewer.setCtc(CtcIO.readFile(file));
 			LOG.info("CTC file loaded successfully: {}", file.getAbsolutePath());
+			setMainText(SELECT_INFO);
 		} catch (Exception e) {
 			LOG.warn("Error while reading CTC file", e);
 		}
@@ -142,11 +154,13 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuClose() {
+		setMainText(SELECT_INFO);
 		treeViewer.setCtc(null);
 	}
 
 	@Override
 	public void menuExit() {
+		LOG.info("Shutting down MHW CTC Editor");
 		System.exit(0);
 	}
 
@@ -178,12 +192,12 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void onTopicSelected() {
-		setMainText("Select one or multiple objects on the left");
+		setMainText(SELECT_INFO);
 	}
 
 	@Override
 	public void onIllegalSelection() {
-		setMainText("Please do not select items of different types");
+		setMainText(SELECT_TYPE_INFO);
 	}
 
 	// AllowSellectionCallback
@@ -208,17 +222,14 @@ public class CtcEditor extends JFrame
 
 	private void setMainText(String text) {
 		CtcEditorPanel panel = new CtcEditorPanel();
-		panel.add(new JLabel(text));
+		panel.getMainPanel().add(new JLabel(text));
 		setMainPanel(panel);
 	}
 
 	private void setMainPanel(CtcEditorPanel component) {
 		mainPanel = component;
 		int dividerLocation = splitTreeAndMain.getDividerLocation();
-		JScrollPane scrollMainPanel = new JScrollPane(component);
-		scrollMainPanel.setMinimumSize(new Dimension(50, 0));
-		scrollMainPanel.setPreferredSize(new Dimension(500, 500));
-		splitTreeAndMain.setRightComponent(scrollMainPanel);
+		splitTreeAndMain.setRightComponent(component);
 		splitTreeAndMain.setDividerLocation(dividerLocation);
 	}
 

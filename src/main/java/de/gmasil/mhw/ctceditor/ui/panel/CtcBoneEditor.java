@@ -2,8 +2,6 @@ package de.gmasil.mhw.ctceditor.ui.panel;
 
 import java.util.Set;
 
-import javax.swing.JLabel;
-
 import de.gmasil.mhw.ctceditor.ctc.CtcBone;
 
 public class CtcBoneEditor extends CtcEditorPanel {
@@ -11,8 +9,8 @@ public class CtcBoneEditor extends CtcEditorPanel {
 	private boolean dataChanged = false;
 
 	public CtcBoneEditor(Set<CtcBone> bones) {
+		super("CTC Bone", true);
 		this.bones = bones;
-		add(new JLabel("CTC Bone"));
 	}
 
 	@Override
