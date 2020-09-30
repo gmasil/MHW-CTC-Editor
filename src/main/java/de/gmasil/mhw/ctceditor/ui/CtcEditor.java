@@ -1,6 +1,7 @@
 package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -30,6 +32,9 @@ import de.gmasil.mhw.ctceditor.logging.SwingAppender;
 import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
 import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcBoneEditor;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcChainEditor;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcHeaderEditor;
 
 public class CtcEditor extends JFrame implements FileOpenedListener, MenuListener, SelectionListener {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -106,11 +111,13 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		}
 	}
 
-	public void refreshUI() {
+	private void refreshUI() {
 		invalidate();
 		validate();
 		repaint();
 	}
+
+	// FileOpenedListener
 
 	@Override
 	public void onFileOpened(File file) {
@@ -121,6 +128,8 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 			LOG.warn("Error while reading CTC file", e);
 		}
 	}
+
+	// MenuListener
 
 	@Override
 	public void menuOpen() {
@@ -156,7 +165,49 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		return showConsole;
 	}
 
-	public void updateConsole() {
+	// SelectionListener
+
+	@Override
+	public void onHeaderSelected(CtcHeader header) {
+		setMainComponent(new CtcHeaderEditor(header));
+	}
+
+	@Override
+	public void onChainSelected(Set<CtcChain> chains) {
+		setMainComponent(new CtcChainEditor(chains));
+	}
+
+	@Override
+	public void onBoneSelected(Set<CtcBone> bones) {
+		setMainComponent(new CtcBoneEditor(bones));
+	}
+
+	@Override
+	public void onTopicSelected() {
+		setMainText("Select one or multiple objects on the left");
+	}
+
+	@Override
+	public void onIllegalSelection() {
+		setMainText("Please do not select items of different types");
+	}
+
+	private void setMainText(String text) {
+		JPanel panel = new JPanel();
+		panel.add(new JLabel(text));
+		setMainComponent(panel);
+	}
+
+	private void setMainComponent(Component component) {
+		int dividerLocation = splitTreeAndMain.getDividerLocation();
+		JScrollPane scrollMainPanel = new JScrollPane(component);
+		scrollMainPanel.setMinimumSize(new Dimension(50, 0));
+		scrollMainPanel.setPreferredSize(new Dimension(500, 500));
+		splitTreeAndMain.setRightComponent(scrollMainPanel);
+		splitTreeAndMain.setDividerLocation(dividerLocation);
+	}
+
+	private void updateConsole() {
 		if (showConsole) {
 			setContentPane(splitTopBottom);
 			splitTopBottom.setLeftComponent(splitTreeAndMain);
@@ -179,26 +230,6 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		}
 	}
 
-	@Override
-	public void onHeaderSelected(CtcHeader header) {
-		LOG.debug("header selected");
-	}
-
-	@Override
-	public void onChainSelected(Set<CtcChain> chains) {
-		LOG.debug("{} chains selected", chains.size());
-	}
-
-	@Override
-	public void onBoneSelected(Set<CtcBone> bones) {
-		LOG.debug("{} bones selected", bones.size());
-	}
-
-	@Override
-	public void onIllegalSelection() {
-		LOG.debug("illegal selection");
-	}
-
 	public static void main(String[] args) {
 		LOG.info("MHW CTC Editor is starting");
 		copyStarterFile();
@@ -212,7 +243,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 		});
 	}
 
-	public static void copyStarterFile() {
+	private static void copyStarterFile() {
 		try {
 			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {

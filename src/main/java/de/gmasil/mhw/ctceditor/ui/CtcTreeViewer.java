@@ -77,6 +77,8 @@ public class CtcTreeViewer extends JTree {
 				list.add((CtcBone) ((DefaultMutableTreeNode) selectionPath.getLastPathComponent()).getUserObject());
 			}
 			selectionListener.onBoneSelected(list);
+		} else if (clazz == String.class) {
+			selectionListener.onTopicSelected();
 		} else {
 			selectionListener.onIllegalSelection();
 		}

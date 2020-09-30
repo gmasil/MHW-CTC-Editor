@@ -13,5 +13,7 @@ public interface SelectionListener {
 
 	public void onBoneSelected(Set<CtcBone> bones);
 
+	public void onTopicSelected();
+
 	public void onIllegalSelection();
 }

@@ -1,4 +1,4 @@
-package de.gmasil.mhw.ctceditor.ui;
+package de.gmasil.mhw.ctceditor.ui.panel;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,5 +12,4 @@ public class CtcHeaderEditor extends JPanel {
 		this.header = header;
 		add(new JLabel("CTC Header"));
 	}
-
 }
