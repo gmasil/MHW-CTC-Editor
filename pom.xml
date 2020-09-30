@@ -206,31 +206,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- copy starter file -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${resources-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>copy-starter</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/release/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/resources</directory>
-									<includes>
-										<include>MHW-CTC-Editor.cmd</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- build fat jar -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -271,7 +246,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- copy fat jar to release folder -->
+			<!-- copy files to release folder -->
 			<plugin>
 				<groupId>com.coderplus.maven.plugins</groupId>
 				<artifactId>copy-rename-maven-plugin</artifactId>
@@ -286,6 +261,17 @@
 						<configuration>
 							<sourceFile>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</sourceFile>
 							<destinationFile>target/release/${project.name}.jar</destinationFile>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-starter-script</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<sourceFile>${basedir}/src/main/resources/MHW-CTC-Editor.cmd</sourceFile>
+							<destinationFile>${basedir}/target/release/MHW-CTC-Editor.cmd</destinationFile>
 						</configuration>
 					</execution>
 				</executions>

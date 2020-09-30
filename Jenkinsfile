@@ -37,7 +37,6 @@ pipeline {
   post {
     always {
       junit '**/surefire-reports/**/*.xml'
-      archiveArtifacts artifacts: '**/target/*.zip', fingerprint: true, allowEmptyArchive: true
     }
   }
 }
