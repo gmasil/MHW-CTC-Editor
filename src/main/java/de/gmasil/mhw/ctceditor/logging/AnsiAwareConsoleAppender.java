@@ -1,31 +1,34 @@
 package de.gmasil.mhw.ctceditor.logging;
 
 import org.fusesource.jansi.internal.CLibrary;
+import org.fusesource.jansi.internal.WindowsSupport;
 
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
 
-public class AnsiAwareConsoleAppender extends AppenderBase<ILoggingEvent> {
+public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 	private boolean useAnsi = false;
-	private PatternLayoutEncoder encoder;
+	private PatternLayoutEncoderBase<E> encoder;
 
-	public PatternLayoutEncoder getEncoder() {
+	public PatternLayoutEncoderBase<E> getEncoder() {
 		return encoder;
 	}
 
-	public void setEncoder(PatternLayoutEncoder encoder) {
+	public void setEncoder(PatternLayoutEncoderBase<E> encoder) {
 		this.encoder = encoder;
 	}
 
 	@Override
 	public void start() {
 		useAnsi = CLibrary.isatty(CLibrary.STDOUT_FILENO) == 1;
+		if (useAnsi && WindowsSupport.getConsoleMode() != -1) {
+			useAnsi = false;
+		}
 		super.start();
 	}
 
 	@Override
-	protected void append(ILoggingEvent event) {
+	protected void append(E event) {
 		String msg = encoder.getLayout().doLayout(event);
 		if (!useAnsi) {
 			msg = msg.replaceAll("\u001B\\[[;\\d]*m", "");
