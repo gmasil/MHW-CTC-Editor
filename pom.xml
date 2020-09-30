@@ -16,6 +16,7 @@
 		<javafx.version>11</javafx.version>
 		<logback.version>1.2.3</logback.version>
 		<commons.version>2.8.0</commons.version>
+		<jansi.version>1.18</jansi.version>
 		<junit-jupiter.version>5.5.2</junit-jupiter.version>
 		<junit-platform.version>1.5.2</junit-platform.version>
 		<hamcrest.version>2.2</hamcrest.version>
@@ -47,6 +48,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>${jansi.version}</version>
 		</dependency>
 		<!-- jupiter -->
 		<dependency>

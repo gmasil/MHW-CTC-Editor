@@ -5,7 +5,7 @@
 	<!-- appenders -->
 	<appender name="GUI" class="de.gmasil.mhw.ctceditor.logging.SwingAppender">
 	</appender>
-	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	<appender name="CONSOLE" class="de.gmasil.mhw.ctceditor.logging.AnsiAwareConsoleAppender">
 		<encoder>
 			<pattern>%date{YYYY-MM-DD HH:mm:ss} [%-14clevel] %boldMagenta(%-20logger{20}): %msg%n</pattern>
 		</encoder>

@@ -200,7 +200,7 @@ public class CtcEditor extends JFrame implements FileOpenedListener, MenuListene
 	}
 
 	public static void main(String[] args) {
-		LOG.debug("MHW CTC Editor is starting");
+		LOG.info("MHW CTC Editor is starting");
 		copyStarterFile();
 		EventQueue.invokeLater(() -> {
 			try {
