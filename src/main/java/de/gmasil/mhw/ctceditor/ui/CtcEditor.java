@@ -30,10 +30,10 @@ import de.gmasil.mhw.ctceditor.ui.api.AllowSelectionCallback;
 import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
 import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
-import de.gmasil.mhw.ctceditor.ui.panel.CtcBoneEditor;
-import de.gmasil.mhw.ctceditor.ui.panel.CtcChainEditor;
-import de.gmasil.mhw.ctceditor.ui.panel.CtcEditorPanel;
-import de.gmasil.mhw.ctceditor.ui.panel.CtcHeaderEditor;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcBoneEditorPanel;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcChainEditorPanel;
+import de.gmasil.mhw.ctceditor.ui.panel.CtcHeaderEditorPanel;
+import de.gmasil.mhw.ctceditor.ui.panel.generic.BaseCtcEditorPanel;
 
 public class CtcEditor extends JFrame
 		implements FileOpenedListener, MenuListener, SelectionListener, AllowSelectionCallback {
@@ -51,7 +51,7 @@ public class CtcEditor extends JFrame
 	private boolean showConsole = config.getShowConsole();
 	private boolean showConsoleOnStartup = showConsole;
 	private int consoleHeight;
-	private CtcEditorPanel mainPanel;
+	private BaseCtcEditorPanel mainPanel;
 
 	public CtcEditor(String... args) {
 		this.setTitle("MHW CTC Editor");
@@ -177,17 +177,17 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void onHeaderSelected(CtcHeader header) {
-		setMainPanel(new CtcHeaderEditor(header));
+		setMainPanel(new CtcHeaderEditorPanel(header));
 	}
 
 	@Override
 	public void onChainSelected(Set<CtcChain> chains) {
-		setMainPanel(new CtcChainEditor(chains));
+		setMainPanel(new CtcChainEditorPanel(chains));
 	}
 
 	@Override
 	public void onBoneSelected(Set<CtcBone> bones) {
-		setMainPanel(new CtcBoneEditor(bones));
+		setMainPanel(new CtcBoneEditorPanel(bones));
 	}
 
 	@Override
@@ -221,19 +221,19 @@ public class CtcEditor extends JFrame
 	}
 
 	private void setMainText(String text) {
-		CtcEditorPanel panel = new CtcEditorPanel();
+		BaseCtcEditorPanel panel = new BaseCtcEditorPanel();
 		panel.getMainPanel().add(new JLabel(text));
 		setMainPanel(panel);
 	}
 
-	private void setMainPanel(CtcEditorPanel component) {
+	private void setMainPanel(BaseCtcEditorPanel component) {
 		mainPanel = component;
 		int dividerLocation = splitTreeAndMain.getDividerLocation();
 		splitTreeAndMain.setRightComponent(component);
 		splitTreeAndMain.setDividerLocation(dividerLocation);
 	}
 
-	private CtcEditorPanel getMainPanel() {
+	private BaseCtcEditorPanel getMainPanel() {
 		return mainPanel;
 	}
 

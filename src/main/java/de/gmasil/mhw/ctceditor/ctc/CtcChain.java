@@ -7,22 +7,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CtcChain implements Serializable {
-	private int chainLength; // Chain Length
-	private byte collision; // Usually a number between 0 and 10
-	private byte weightiness; // Weightiness
+	@Info("Chain Length")
+	private int chainLength;
+	@Info("Usually a number between 0 and 10")
+	private byte collision;
+	@Info("Weightiness")
+	private byte weightiness;
 	private byte[] unknownByteSet = new byte[26];
-	private float xGravity; // 10 = 1m/s^2, usually 0
-	private float yGravity; // 10 = 1m/s^2, -981 for normal gravity
-	private float zGravity; // 10 = 1m/s^2, usually 0
-	private float unknownFloatOne; // Always 0
-	private float poseSnapping; // Retention of T-pose. High values 'disable' physics. 0 stops the bone from
-								// 'bouncing'
-	private float coneOfMotion; // Level of movement allowed. Mostly noticeable when jumping from heights.
-	private float tensionDamp; // Higher values = more tension. Like a coiled doorstop.
-	private float unknownFloatTwo; // Always 100
-	private float unknownFloatThree; // Always 0
-	private float unknownFloatFour; // Always 0.1
-	private float windMultiplier; // Usually a float between 0 and 1
+	@Info("10 = 1m/s^2, usually 0")
+	private float xGravity;
+	@Info("10 = 1m/s^2, -981 for normal gravity")
+	private float yGravity;
+	@Info("10 = 1m/s^2, usually 0")
+	private float zGravity;
+	@Info("Always 0")
+	private float unknownFloatOne;
+	@Info("Retention of T-pose. High values 'disable' physics. 0 stops the bone from 'bouncing'")
+	private float poseSnapping;
+	@Info("Level of movement allowed. Mostly noticeable when jumping from heights.")
+	private float coneOfMotion;
+	@Info("Higher values = more tension. Like a coiled doorstop.")
+	private float tensionDamp;
+	@Info("Always 100")
+	private float unknownFloatTwo;
+	@Info("Always 0")
+	private float unknownFloatThree;
+	@Info("Always 0.1")
+	private float unknownFloatFour;
+	@Info("Usually a float between 0 and 1")
+	private float windMultiplier;
 	private int lod;
 
 	private List<CtcBone> bones = new LinkedList<>();
@@ -88,15 +101,15 @@ public class CtcChain implements Serializable {
 		return unknownByteSet;
 	}
 
-	public float getxGravity() {
+	public float getXGravity() {
 		return xGravity;
 	}
 
-	public float getyGravity() {
+	public float getYGravity() {
 		return yGravity;
 	}
 
-	public float getzGravity() {
+	public float getZGravity() {
 		return zGravity;
 	}
 

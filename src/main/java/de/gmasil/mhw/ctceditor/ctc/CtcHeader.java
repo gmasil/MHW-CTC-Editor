@@ -10,14 +10,22 @@ public class CtcHeader implements Serializable {
 	private int boneChainCount;
 	private int boneCount;
 	private int unknownConstantInt;
-	private float updateTicks; // Keep 0.16666. Once every frame @ 60fps
-	private float poseSnapping; // Retention of the initial pose. Typically 1.0
-	private float chainDamping; // 0 = springy, 1 = damp. Don't exceed 1.0
-	private float reactionSpeed; // Sensitivity to movement.
-	private float gravityMult; // Can be negative. -1.0 to 1.0"
-	private float windMultMid; // Power of average wind. 0 = Stiff
-	private float windMultLow; // Power of weak winds. 0 = Stiff
-	private float windMultHigh; // Power of heavy winds. 0 = Stiff
+	@Info("Keep 0.16666. Once every frame @ 60fps")
+	private float updateTicks;
+	@Info("Retention of the initial pose. Typically 1.0")
+	private float poseSnapping;
+	@Info("0 = springy, 1 = damp. Don't exceed 1.0")
+	private float chainDamping;
+	@Info("Sensitivity to movement")
+	private float reactionSpeed;
+	@Info("Can be negative. -1.0 to 1.0")
+	private float gravityMult;
+	@Info("Power of average wind. 0 = Stiff")
+	private float windMultMid;
+	@Info("Power of weak winds. 0 = Stiff")
+	private float windMultLow;
+	@Info("Power of heavy winds. 0 = Stiff")
+	private float windMultHigh;
 	private float[] unknownFloatSet = new float[3];
 	private byte[] unknownByteSet = new byte[8];
 

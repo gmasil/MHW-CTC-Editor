@@ -5,24 +5,38 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class CtcBone implements Serializable {
-	private float negMaxX; // Negative X axis maximum in radians
-	private float negMaxY; // Negative Y axis maximum in radians
-	private float negMaxZ; // Negative Z axis maximum in radians
-	private float worldX; // Something to do with world space
-	private float maxZ; // Positive Z axis maximum in radians
-	private float maxY; // Positive Y axis maximum in radians
-	private float maxX; // Positive X axis maximum in radians
-	private float worldY; // Something to do with world space
-	private float someX; // Something along X(?)
-	private float someY; // Something along Y(?)
-	private float someZ; // Something along Z(?)
-	private float worldZ; // Something to do with world space
+	@Info("Negative X axis maximum in radians")
+	private float negMaxX;
+	@Info("Negative Y axis maximum in radians")
+	private float negMaxY;
+	@Info("Negative Z axis maximum in radians")
+	private float negMaxZ;
+	@Info("Something to do with world space")
+	private float worldX;
+	@Info("Positive Z axis maximum in radians")
+	private float maxZ;
+	@Info("Positive Y axis maximum in radians")
+	private float maxY;
+	@Info("Positive X axis maximum in radians")
+	private float maxX;
+	@Info("Something to do with world space")
+	private float worldY;
+	@Info("Something along X(?)")
+	private float someX;
+	@Info("Something along Y(?)")
+	private float someY;
+	@Info("Something along Z(?)")
+	private float someZ;
+	@Info("Something to do with world space")
+	private float worldZ;
 	private float unknown1;
 	private float unknown2;
 	private float unknown3;
-	private float unknown4; // Usually 1
+	@Info("Usually 1")
+	private float unknown4;
 	private byte[] unknownByteSetOne = new byte[2];
-	private byte isParent; // is parent of a chain
+	@Info("is parent of a chain")
+	private byte isParent;
 	private byte[] unknownByteSetTwo = new byte[5];
 	private int boneFunctionID;
 	private byte[] unknownByteSetThree = new byte[4];
@@ -108,88 +122,184 @@ public class CtcBone implements Serializable {
 		return negMaxX;
 	}
 
+	public void setNegMaxX(float negMaxX) {
+		this.negMaxX = negMaxX;
+	}
+
 	public float getNegMaxY() {
 		return negMaxY;
+	}
+
+	public void setNegMaxY(float negMaxY) {
+		this.negMaxY = negMaxY;
 	}
 
 	public float getNegMaxZ() {
 		return negMaxZ;
 	}
 
+	public void setNegMaxZ(float negMaxZ) {
+		this.negMaxZ = negMaxZ;
+	}
+
 	public float getWorldX() {
 		return worldX;
+	}
+
+	public void setWorldX(float worldX) {
+		this.worldX = worldX;
 	}
 
 	public float getMaxZ() {
 		return maxZ;
 	}
 
+	public void setMaxZ(float maxZ) {
+		this.maxZ = maxZ;
+	}
+
 	public float getMaxY() {
 		return maxY;
+	}
+
+	public void setMaxY(float maxY) {
+		this.maxY = maxY;
 	}
 
 	public float getMaxX() {
 		return maxX;
 	}
 
+	public void setMaxX(float maxX) {
+		this.maxX = maxX;
+	}
+
 	public float getWorldY() {
 		return worldY;
+	}
+
+	public void setWorldY(float worldY) {
+		this.worldY = worldY;
 	}
 
 	public float getSomeX() {
 		return someX;
 	}
 
+	public void setSomeX(float someX) {
+		this.someX = someX;
+	}
+
 	public float getSomeY() {
 		return someY;
+	}
+
+	public void setSomeY(float someY) {
+		this.someY = someY;
 	}
 
 	public float getSomeZ() {
 		return someZ;
 	}
 
+	public void setSomeZ(float someZ) {
+		this.someZ = someZ;
+	}
+
 	public float getWorldZ() {
 		return worldZ;
+	}
+
+	public void setWorldZ(float worldZ) {
+		this.worldZ = worldZ;
 	}
 
 	public float getUnknown1() {
 		return unknown1;
 	}
 
+	public void setUnknown1(float unknown1) {
+		this.unknown1 = unknown1;
+	}
+
 	public float getUnknown2() {
 		return unknown2;
+	}
+
+	public void setUnknown2(float unknown2) {
+		this.unknown2 = unknown2;
 	}
 
 	public float getUnknown3() {
 		return unknown3;
 	}
 
+	public void setUnknown3(float unknown3) {
+		this.unknown3 = unknown3;
+	}
+
 	public float getUnknown4() {
 		return unknown4;
+	}
+
+	public void setUnknown4(float unknown4) {
+		this.unknown4 = unknown4;
 	}
 
 	public byte[] getUnknownByteSetOne() {
 		return unknownByteSetOne;
 	}
 
+	public void setUnknownByteSetOne(byte[] unknownByteSetOne) {
+		this.unknownByteSetOne = unknownByteSetOne;
+	}
+
 	public byte getIsParent() {
 		return isParent;
+	}
+
+	public void setIsParent(byte isParent) {
+		this.isParent = isParent;
 	}
 
 	public byte[] getUnknownByteSetTwo() {
 		return unknownByteSetTwo;
 	}
 
+	public void setUnknownByteSetTwo(byte[] unknownByteSetTwo) {
+		this.unknownByteSetTwo = unknownByteSetTwo;
+	}
+
 	public int getBoneFunctionID() {
 		return boneFunctionID;
+	}
+
+	public void setBoneFunctionID(int boneFunctionID) {
+		this.boneFunctionID = boneFunctionID;
 	}
 
 	public byte[] getUnknownByteSetThree() {
 		return unknownByteSetThree;
 	}
 
+	public void setUnknownByteSetThree(byte[] unknownByteSetThree) {
+		this.unknownByteSetThree = unknownByteSetThree;
+	}
+
 	public float[] getUnknownFloatSet() {
 		return unknownFloatSet;
+	}
+
+	public void setUnknownFloatSet(float[] unknownFloatSet) {
+		this.unknownFloatSet = unknownFloatSet;
+	}
+
+	public byte[] getUnknownByteSetFour() {
+		return unknownByteSetFour;
+	}
+
+	public void setUnknownByteSetFour(byte[] unknownByteSetFour) {
+		this.unknownByteSetFour = unknownByteSetFour;
 	}
 
 	@Override
