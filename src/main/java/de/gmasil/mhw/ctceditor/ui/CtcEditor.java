@@ -43,14 +43,14 @@ public class CtcEditor extends JFrame
 	private static final int DIVIDER_SIZE = 4;
 
 	private CtcTreeViewer treeViewer;
-	private Config config = new Config();
-	private WindowsFileChooser windowsFileChooser = new WindowsFileChooser(config, this);
+	private WindowsFileChooser windowsFileChooser = new WindowsFileChooser(this);
 	private JScrollPane scrollConsole;
 	private JSplitPane splitTreeAndMain;
 	private JSplitPane splitTopBottom;
-	private boolean showConsole = config.getShowConsole();
+	private boolean showConsole = Config.getShowConsole();
 	private boolean showConsoleOnStartup = showConsole;
 	private int consoleHeight;
+	private boolean showUnknownFields = Config.getShowUnknownFields();
 	private BaseCtcEditorPanel mainPanel;
 
 	public CtcEditor(String... args) {
@@ -70,7 +70,7 @@ public class CtcEditor extends JFrame
 		getContentPane().setLayout(new BorderLayout());
 
 		// menu bar
-		setJMenuBar(new EditorMenuBar(this, config));
+		setJMenuBar(new EditorMenuBar(this));
 
 		// CTC tree left
 		treeViewer = new CtcTreeViewer(this, this, this, this);
@@ -168,9 +168,17 @@ public class CtcEditor extends JFrame
 	public boolean menuToggleConsole() {
 		showConsole = !showConsole;
 		updateConsole();
-		config.setShowConsole(showConsole);
-		config.save();
+		Config.setShowConsole(showConsole);
+		Config.save();
 		return showConsole;
+	}
+
+	@Override
+	public boolean menuToggleUnknownFields() {
+		showUnknownFields = !showUnknownFields;
+		Config.setShowUnknownFields(showUnknownFields);
+		Config.save();
+		return showUnknownFields;
 	}
 
 	// SelectionListener

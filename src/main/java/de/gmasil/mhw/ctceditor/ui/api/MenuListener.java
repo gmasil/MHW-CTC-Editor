@@ -12,4 +12,6 @@ public interface MenuListener {
 	public void menuExit();
 
 	public boolean menuToggleConsole();
+
+	public boolean menuToggleUnknownFields();
 }

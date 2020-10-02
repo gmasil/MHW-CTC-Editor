@@ -11,6 +11,7 @@ public class CtcBone implements Serializable {
 	private float negMaxY;
 	@Info("Negative Z axis maximum in radians")
 	private float negMaxZ;
+	@Unknown
 	@Info("Something to do with world space")
 	private float worldX;
 	@Info("Positive Z axis maximum in radians")
@@ -19,14 +20,19 @@ public class CtcBone implements Serializable {
 	private float maxY;
 	@Info("Positive X axis maximum in radians")
 	private float maxX;
+	@Unknown
 	@Info("Something to do with world space")
 	private float worldY;
+	@Unknown
 	@Info("Something along X(?)")
 	private float someX;
+	@Unknown
 	@Info("Something along Y(?)")
 	private float someY;
+	@Unknown
 	@Info("Something along Z(?)")
 	private float someZ;
+	@Unknown
 	@Info("Something to do with world space")
 	private float worldZ;
 	private float unknown1;

@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.gmasil.mhw.ctceditor.ctc.Info;
+import de.gmasil.mhw.ctceditor.ctc.Unknown;
+import de.gmasil.mhw.ctceditor.ui.Config;
 
 public abstract class GenericCtcEditorPanel<T extends Serializable> extends BaseCtcEditorPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -41,6 +43,9 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		if (field.getType() == List.class) {
 			return;
 		}
+		if (!Config.getShowUnknownFields() && isFieldUnknown(field)) {
+			return;
+		}
 		if (field.getType().isArray()) {
 			Object[] values = getValueAsArray(field);
 			String info = "";
@@ -62,11 +67,16 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		}
 	}
 
+	protected boolean isFieldUnknown(Field field) {
+		return field.getName().startsWith("unknown") || field.isAnnotationPresent(Unknown.class);
+	}
+
 	private void addInputField(String name, Object value, String info) {
 		if (info == null) {
 			info = "";
 		}
 		getMainPanel().add(prepare(new JLabel(name)));
+		// TODO: print float values without scientific notation
 		getMainPanel().add(prepare(new JTextField(value == null ? "" : value.toString())));
 		getMainPanel().add(prepare(new JLabel(info)));
 	}

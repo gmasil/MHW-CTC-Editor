@@ -10,15 +10,13 @@ import javax.swing.JMenuBar;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.Mockito;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class EditorMenuBarIT {
 	@Test
 	void testMenuBarEntries() {
-		Config configMock = Mockito.mock(Config.class);
-		Mockito.when(configMock.getShowConsole()).thenReturn(true);
-		JMenuBar menu = new EditorMenuBar(null, configMock);
+		Config.setShowConsole(true);
+		JMenuBar menu = new EditorMenuBar(null);
 		assertThat(menu.getMenuCount(), is(equalTo(2)));
 		assertThat(menu.getMenu(0).getText(), is(equalTo("File")));
 		assertThat(menu.getMenu(1).getText(), is(equalTo("View")));
@@ -26,18 +24,16 @@ class EditorMenuBarIT {
 
 	@Test
 	void testFileMenuEntries() {
-		Config configMock = Mockito.mock(Config.class);
-		Mockito.when(configMock.getShowConsole()).thenReturn(true);
-		JMenuBar menu = new EditorMenuBar(null, configMock);
+		Config.setShowConsole(true);
+		JMenuBar menu = new EditorMenuBar(null);
 		JMenu fileMenu = findMenu(menu, "File");
 		assertThat(fileMenu.getMenuComponentCount(), is(equalTo(6)));
 	}
 
 	@Test
 	void testViewMenuEntries() {
-		Config configMock = Mockito.mock(Config.class);
-		Mockito.when(configMock.getShowConsole()).thenReturn(true);
-		JMenuBar menu = new EditorMenuBar(null, configMock);
+		Config.setShowConsole(true);
+		JMenuBar menu = new EditorMenuBar(null);
 		JMenu fileMenu = findMenu(menu, "View");
 		assertThat(fileMenu.getMenuComponentCount(), is(equalTo(1)));
 	}

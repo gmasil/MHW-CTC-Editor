@@ -10,14 +10,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class WindowsFileChooser implements Serializable {
-	private Config config;
 	private FileOpenedListener listener;
 	private File lastOpenedFile = null;
 
-	public WindowsFileChooser(Config config, FileOpenedListener listener) {
-		this.config = config;
+	public WindowsFileChooser(FileOpenedListener listener) {
 		this.listener = listener;
-		lastOpenedFile = new File(config.getLastOpenedFile());
+		lastOpenedFile = new File(Config.getLastOpenedFile());
 	}
 
 	public void openDialog() {
@@ -39,8 +37,8 @@ public class WindowsFileChooser implements Serializable {
 			File selectedFile = fileChooser.showOpenDialog(null);
 			if (selectedFile != null) {
 				lastOpenedFile = selectedFile;
-				config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
-				config.save();
+				Config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
+				Config.save();
 				listener.onFileOpened(selectedFile);
 			}
 		});

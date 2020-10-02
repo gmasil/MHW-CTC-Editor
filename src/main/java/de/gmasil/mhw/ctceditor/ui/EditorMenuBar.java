@@ -21,11 +21,13 @@ import org.slf4j.LoggerFactory;
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
 
 public class EditorMenuBar extends JMenuBar {
+	private static final String CHECK_BOX_CHECKED = "check_box_checked";
+	private static final String CHECK_BOX_BLANK = "check_box_blank";
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final int MENU_HEIGHT = 26;
 	private static final int ICON_SIZE = 18;
 
-	public EditorMenuBar(MenuListener listener, Config config) {
+	public EditorMenuBar(MenuListener listener) {
 		// top menu file
 		JMenu menuFile = new JMenu("File");
 		menuFile.setMnemonic(KeyEvent.VK_F);
@@ -40,25 +42,8 @@ public class EditorMenuBar extends JMenuBar {
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
 		add(menuView);
-		addShowConsoleMenu(menuView, listener, config);
-	}
-
-	private void addShowConsoleMenu(JMenu menuView, MenuListener listener, Config config) {
-		JMenuItem menuConsole = createJMenuItem("Show console");
-		menuConsole.setMnemonic(KeyEvent.VK_C);
-		menuConsole.addActionListener(event -> {
-			if (listener.menuToggleConsole()) {
-				setIcon(menuConsole, "check_box_checked");
-			} else {
-				setIcon(menuConsole, "check_box_blank");
-			}
-		});
-		if (config.getShowConsole()) {
-			setIcon(menuConsole, "check_box_checked");
-		} else {
-			setIcon(menuConsole, "check_box_blank");
-		}
-		menuView.add(menuConsole);
+		addShowConsoleMenu(menuView, listener);
+		addShowUnknownFieldsMenu(menuView, listener);
 	}
 
 	private void addOpenMenu(JMenu menuFile, MenuListener listener) {
@@ -102,6 +87,42 @@ public class EditorMenuBar extends JMenuBar {
 		menuExit.addActionListener(event -> listener.menuExit());
 		setIcon(menuExit, "exit");
 		menuFile.add(menuExit);
+	}
+
+	private void addShowConsoleMenu(JMenu menuView, MenuListener listener) {
+		JMenuItem menuConsole = createJMenuItem("Show console");
+		menuConsole.setMnemonic(KeyEvent.VK_C);
+		menuConsole.addActionListener(event -> {
+			if (listener.menuToggleConsole()) {
+				setIcon(menuConsole, CHECK_BOX_CHECKED);
+			} else {
+				setIcon(menuConsole, CHECK_BOX_BLANK);
+			}
+		});
+		if (Config.getShowConsole()) {
+			setIcon(menuConsole, CHECK_BOX_CHECKED);
+		} else {
+			setIcon(menuConsole, CHECK_BOX_BLANK);
+		}
+		menuView.add(menuConsole);
+	}
+
+	private void addShowUnknownFieldsMenu(JMenu menuView, MenuListener listener) {
+		JMenuItem menuUnknownFields = createJMenuItem("Show unknown fields");
+		menuUnknownFields.setMnemonic(KeyEvent.VK_U);
+		menuUnknownFields.addActionListener(event -> {
+			if (listener.menuToggleUnknownFields()) {
+				setIcon(menuUnknownFields, CHECK_BOX_CHECKED);
+			} else {
+				setIcon(menuUnknownFields, CHECK_BOX_BLANK);
+			}
+		});
+		if (Config.getShowUnknownFields()) {
+			setIcon(menuUnknownFields, CHECK_BOX_CHECKED);
+		} else {
+			setIcon(menuUnknownFields, CHECK_BOX_BLANK);
+		}
+		menuView.add(menuUnknownFields);
 	}
 
 	// helpers
