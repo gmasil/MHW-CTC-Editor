@@ -175,9 +175,26 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public boolean menuToggleUnknownFields() {
-		showUnknownFields = !showUnknownFields;
-		Config.setShowUnknownFields(showUnknownFields);
-		Config.save();
+		if (!getMainPanel().hasDataChanged()) {
+			showUnknownFields = !showUnknownFields;
+			Config.setShowUnknownFields(showUnknownFields);
+			Config.save();
+			if (getMainPanel() instanceof CtcHeaderEditorPanel) {
+				CtcHeaderEditorPanel panel = (CtcHeaderEditorPanel) getMainPanel();
+				setMainPanel(new CtcHeaderEditorPanel(panel.getObject()));
+			} else if (getMainPanel() instanceof CtcChainEditorPanel) {
+				CtcChainEditorPanel panel = (CtcChainEditorPanel) getMainPanel();
+				setMainPanel(new CtcChainEditorPanel(panel.getObjectSet()));
+			} else if (getMainPanel() instanceof CtcBoneEditorPanel) {
+				CtcBoneEditorPanel panel = (CtcBoneEditorPanel) getMainPanel();
+				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet()));
+			}
+		} else {
+			String s = showUnknownFields ? "hide" : "show";
+			JOptionPane.showMessageDialog(this,
+					"Cannot " + s + " unknown fields while you are editing data. Apply or reset unchanged data first.",
+					"Cannot " + s + " unknown fields", JOptionPane.OK_OPTION);
+		}
 		return showUnknownFields;
 	}
 

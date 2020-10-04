@@ -13,6 +13,10 @@ public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtc
 		initFields();
 	}
 
+	public Set<T> getObjectSet() {
+		return objectSet;
+	}
+
 	@Override
 	protected Object[] getValueAsArray(Field field) {
 		Object[] original = objectSet.toArray();

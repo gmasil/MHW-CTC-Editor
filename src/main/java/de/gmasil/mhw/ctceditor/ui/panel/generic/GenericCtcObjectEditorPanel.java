@@ -12,6 +12,10 @@ public class GenericCtcObjectEditorPanel<T extends Serializable> extends Generic
 		initFields();
 	}
 
+	public T getObject() {
+		return object;
+	}
+
 	@Override
 	protected Object[] getValueAsArray(Field field) {
 		return getValueAsArray(field, object);

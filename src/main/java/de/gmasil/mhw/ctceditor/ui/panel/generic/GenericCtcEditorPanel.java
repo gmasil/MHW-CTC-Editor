@@ -39,6 +39,16 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	protected abstract Object getValue(Field field);
 
+	@Override
+	public void onApplyClicked() {
+		dataChanged = true;
+	}
+
+	@Override
+	public void onResetClicked() {
+
+	}
+
 	protected void addInputField(Field field) {
 		if (field.getType() == List.class) {
 			return;

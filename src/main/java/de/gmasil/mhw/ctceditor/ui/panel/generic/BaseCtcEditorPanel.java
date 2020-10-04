@@ -19,19 +19,19 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 	private JPanel mainPanel = new JPanel();
 
 	/**
-	 * Creates a {@link BaseCtcEditorPanel} without title and without save button
+	 * Creates a {@link BaseCtcEditorPanel} without title and without apply button
 	 */
 	public BaseCtcEditorPanel() {
 		this(null, false);
 	}
 
 	/**
-	 * Creates a {@link BaseCtcEditorPanel} with given title and savability
+	 * Creates a {@link BaseCtcEditorPanel} with given title and applicability
 	 * 
 	 * @param title
-	 * @param saveable
+	 * @param applicable
 	 */
-	public BaseCtcEditorPanel(String title, boolean saveable) {
+	public BaseCtcEditorPanel(String title, boolean applicable) {
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
 		setLayout(new BorderLayout());
 		getMainPanel().setLayout(new GridLayout(0, 3, 10, 10));
@@ -44,8 +44,8 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 		if (title != null) {
 			setTitle(title);
 		}
-		if (saveable) {
-			addSaveButtons();
+		if (applicable) {
+			addApplyButtons();
 		}
 	}
 
@@ -62,14 +62,28 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 		add(titlePanel, BorderLayout.PAGE_START);
 	}
 
-	private void addSaveButtons() {
+	private void addApplyButtons() {
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		JButton btnSave = new JButton("Apply");
+		JButton btnApply = new JButton("Apply");
+		btnApply.addActionListener(e -> {
+			onApplyClicked();
+		});
 		JButton btnReset = new JButton("Reset");
-		controlPanel.add(btnSave);
+		btnApply.addActionListener(e -> {
+			onResetClicked();
+		});
+		controlPanel.add(btnApply);
 		controlPanel.add(btnReset);
 		add(controlPanel, BorderLayout.PAGE_END);
+	}
+
+	public void onApplyClicked() {
+		// can be overwritten be subclasses
+	}
+
+	public void onResetClicked() {
+		// can be overwritten be subclasses
 	}
 
 	@Override
