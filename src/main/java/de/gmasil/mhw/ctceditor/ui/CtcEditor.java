@@ -175,7 +175,7 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public boolean menuToggleUnknownFields() {
-		if (!getMainPanel().hasDataChanged()) {
+		if (allowSelectionChange()) {
 			showUnknownFields = !showUnknownFields;
 			Config.setShowUnknownFields(showUnknownFields);
 			Config.save();
@@ -189,11 +189,6 @@ public class CtcEditor extends JFrame
 				CtcBoneEditorPanel panel = (CtcBoneEditorPanel) getMainPanel();
 				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet()));
 			}
-		} else {
-			String s = showUnknownFields ? "hide" : "show";
-			JOptionPane.showMessageDialog(this,
-					"Cannot " + s + " unknown fields while you are editing data. Apply or reset unchanged data first.",
-					"Cannot " + s + " unknown fields", JOptionPane.OK_OPTION);
 		}
 		return showUnknownFields;
 	}
@@ -231,7 +226,7 @@ public class CtcEditor extends JFrame
 	public boolean allowSelectionChange() {
 		if (getMainPanel().hasDataChanged()) {
 			int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-					"You have unsaved changes, do you want to save them now?", "Unsaved changes",
+					"You have unapplied changes, do you want to apply them now?", "Unsaved changes",
 					JOptionPane.YES_NO_CANCEL_OPTION);
 			if (showConfirmDialog == JOptionPane.YES_OPTION) {
 				JOptionPane.showMessageDialog(this, "saving...");
