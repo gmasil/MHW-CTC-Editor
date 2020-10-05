@@ -5,9 +5,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class CtcHeader implements Serializable {
+	@Readonly
 	private String fileType;
 	private int[] unknownConstantIntSet = new int[3];
+	@Readonly
 	private int boneChainCount;
+	@Readonly
 	private int boneCount;
 	private int unknownConstantInt;
 	@Info("Keep 0.16666. Once every frame @ 60fps")

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CtcChain implements Serializable {
+	@Readonly
 	@Info("Chain Length")
 	private int chainLength;
 	@Info("Usually a number between 0 and 10")
@@ -169,15 +170,15 @@ public class CtcChain implements Serializable {
 		this.unknownByteSet = unknownByteSet;
 	}
 
-	public void setxGravity(float xGravity) {
+	public void setXGravity(float xGravity) {
 		this.xGravity = xGravity;
 	}
 
-	public void setyGravity(float yGravity) {
+	public void setYGravity(float yGravity) {
 		this.yGravity = yGravity;
 	}
 
-	public void setzGravity(float zGravity) {
+	public void setZGravity(float zGravity) {
 		this.zGravity = zGravity;
 	}
 

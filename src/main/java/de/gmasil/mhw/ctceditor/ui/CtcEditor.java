@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import de.gmasil.mhw.ctceditor.logging.SwingAppender;
 import de.gmasil.mhw.ctceditor.ui.api.AllowSelectionCallback;
 import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
+import de.gmasil.mhw.ctceditor.ui.api.RepaintTreeCallback;
 import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
 import de.gmasil.mhw.ctceditor.ui.panel.CtcBoneEditorPanel;
 import de.gmasil.mhw.ctceditor.ui.panel.CtcChainEditorPanel;
@@ -36,7 +38,7 @@ import de.gmasil.mhw.ctceditor.ui.panel.CtcHeaderEditorPanel;
 import de.gmasil.mhw.ctceditor.ui.panel.generic.BaseCtcEditorPanel;
 
 public class CtcEditor extends JFrame
-		implements FileOpenedListener, MenuListener, SelectionListener, AllowSelectionCallback {
+		implements FileOpenedListener, MenuListener, SelectionListener, AllowSelectionCallback, RepaintTreeCallback {
 	private static final String SELECT_TYPE_INFO = "Please do not select items of different types";
 	private static final String SELECT_INFO = "Select one or multiple objects on the left";
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -52,6 +54,7 @@ public class CtcEditor extends JFrame
 	private int consoleHeight;
 	private boolean showUnknownFields = Config.getShowUnknownFields();
 	private BaseCtcEditorPanel mainPanel;
+	private File currentlyOpenedFile = null;
 
 	public CtcEditor(String... args) {
 		this.setTitle("MHW CTC Editor");
@@ -128,6 +131,7 @@ public class CtcEditor extends JFrame
 	public void onFileOpened(File file) {
 		try {
 			treeViewer.setCtc(CtcIO.readFile(file));
+			currentlyOpenedFile = file;
 			LOG.info("CTC file loaded successfully: {}", file.getAbsolutePath());
 			setMainText(SELECT_INFO);
 		} catch (Exception e) {
@@ -144,7 +148,14 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuSave() {
-		// TODO: implement save operation
+		if (currentlyOpenedFile != null) {
+			try {
+				CtcIO.write(treeViewer.getCtc(), currentlyOpenedFile);
+				LOG.info("CTC file successfully saved to {}", currentlyOpenedFile.getAbsolutePath());
+			} catch (IOException e) {
+				LOG.error("Error while saving CTC file to {}", currentlyOpenedFile.getAbsolutePath(), e);
+			}
+		}
 	}
 
 	@Override
@@ -156,6 +167,7 @@ public class CtcEditor extends JFrame
 	public void menuClose() {
 		setMainText(SELECT_INFO);
 		treeViewer.setCtc(null);
+		currentlyOpenedFile = null;
 	}
 
 	@Override
@@ -181,13 +193,13 @@ public class CtcEditor extends JFrame
 			Config.save();
 			if (getMainPanel() instanceof CtcHeaderEditorPanel) {
 				CtcHeaderEditorPanel panel = (CtcHeaderEditorPanel) getMainPanel();
-				setMainPanel(new CtcHeaderEditorPanel(panel.getObject()));
+				setMainPanel(new CtcHeaderEditorPanel(panel.getObject(), this));
 			} else if (getMainPanel() instanceof CtcChainEditorPanel) {
 				CtcChainEditorPanel panel = (CtcChainEditorPanel) getMainPanel();
-				setMainPanel(new CtcChainEditorPanel(panel.getObjectSet()));
+				setMainPanel(new CtcChainEditorPanel(panel.getObjectSet(), this));
 			} else if (getMainPanel() instanceof CtcBoneEditorPanel) {
 				CtcBoneEditorPanel panel = (CtcBoneEditorPanel) getMainPanel();
-				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet()));
+				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet(), this));
 			}
 		}
 		return showUnknownFields;
@@ -197,17 +209,17 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void onHeaderSelected(CtcHeader header) {
-		setMainPanel(new CtcHeaderEditorPanel(header));
+		setMainPanel(new CtcHeaderEditorPanel(header, this));
 	}
 
 	@Override
 	public void onChainSelected(Set<CtcChain> chains) {
-		setMainPanel(new CtcChainEditorPanel(chains));
+		setMainPanel(new CtcChainEditorPanel(chains, this));
 	}
 
 	@Override
 	public void onBoneSelected(Set<CtcBone> bones) {
-		setMainPanel(new CtcBoneEditorPanel(bones));
+		setMainPanel(new CtcBoneEditorPanel(bones, this));
 	}
 
 	@Override
@@ -226,7 +238,7 @@ public class CtcEditor extends JFrame
 	public boolean allowSelectionChange() {
 		if (getMainPanel().hasDataChanged()) {
 			int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-					"You have unapplied changes, do you want to apply them now?", "Unsaved changes",
+					"You have unapplied changes, do you want to apply them now?", "Unapplied changes",
 					JOptionPane.YES_NO_CANCEL_OPTION);
 			if (showConfirmDialog == JOptionPane.YES_OPTION) {
 				getMainPanel().onApplyClicked();
@@ -237,6 +249,13 @@ public class CtcEditor extends JFrame
 			}
 		}
 		return true;
+	}
+
+	// RepaintTreeCallback
+
+	@Override
+	public void repaintTree() {
+		treeViewer.repaint();
 	}
 
 	private void setMainText(String text) {

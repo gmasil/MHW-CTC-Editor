@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import de.gmasil.mhw.ctceditor.ui.api.RepaintTreeCallback;
+
 public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtcEditorPanel<T> {
 	private Set<T> objectSet;
 
-	public GenericCtcSetEditorPanel(String title, Class<T> clazz, Set<T> objectSet) {
-		super(title, clazz);
+	public GenericCtcSetEditorPanel(String title, Class<T> clazz, Set<T> objectSet, RepaintTreeCallback treeRepainter) {
+		super(title, clazz, treeRepainter);
 		this.objectSet = objectSet;
 		initFields();
 	}
@@ -18,11 +20,11 @@ public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtc
 	}
 
 	@Override
-	protected Object[] getValueAsArray(Field field) {
+	protected Object[] getArrayValue(Field field) {
 		Object[] original = objectSet.toArray();
-		Object[] ret = getValueAsArray(field, original[0]);
+		Object[] ret = getArrayValue(field, original[0]);
 		for (int i = 1; i < original.length; i++) {
-			Object[] values = getValueAsArray(field, original[i]);
+			Object[] values = getArrayValue(field, original[i]);
 			for (int x = 0; x < values.length; x++) {
 				if (!values[x].equals(ret[x])) {
 					ret[x] = null;
@@ -42,5 +44,21 @@ public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtc
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	protected void setArrayValue(Field field, Object arrayValue, int index) {
+		Object[] original = objectSet.toArray();
+		for (int i = 0; i < original.length; i++) {
+			setArrayValue(field, original[i], arrayValue, index);
+		}
+	}
+
+	@Override
+	protected void setValue(Field field, Object value) {
+		Object[] original = objectSet.toArray();
+		for (int i = 0; i < original.length; i++) {
+			setValue(field, original[i], value);
+		}
 	}
 }
