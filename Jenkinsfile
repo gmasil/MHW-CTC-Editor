@@ -34,9 +34,4 @@ pipeline {
       }
     }
   }
-  post {
-    always {
-      junit '**/surefire-reports/**/*.xml'
-    }
-  }
 }
