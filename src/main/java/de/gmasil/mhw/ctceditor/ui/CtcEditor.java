@@ -229,11 +229,10 @@ public class CtcEditor extends JFrame
 					"You have unapplied changes, do you want to apply them now?", "Unsaved changes",
 					JOptionPane.YES_NO_CANCEL_OPTION);
 			if (showConfirmDialog == JOptionPane.YES_OPTION) {
-				JOptionPane.showMessageDialog(this, "saving...");
+				getMainPanel().onApplyClicked();
 			} else if (showConfirmDialog == JOptionPane.NO_OPTION) {
-				JOptionPane.showMessageDialog(this, "discarding...");
+				getMainPanel().onResetClicked();
 			} else {
-				JOptionPane.showMessageDialog(this, "staying in windows");
 				return false;
 			}
 		}

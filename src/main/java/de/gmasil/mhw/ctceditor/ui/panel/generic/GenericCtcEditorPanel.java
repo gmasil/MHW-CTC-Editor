@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import de.gmasil.mhw.ctceditor.ctc.Info;
 import de.gmasil.mhw.ctceditor.ctc.Unknown;
 import de.gmasil.mhw.ctceditor.ui.Config;
+import de.gmasil.mhw.ctceditor.ui.DecimalUtils;
 
 public abstract class GenericCtcEditorPanel<T extends Serializable> extends BaseCtcEditorPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -41,12 +42,12 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	@Override
 	public void onApplyClicked() {
-		dataChanged = true;
+		// TODO: apply field values to object
 	}
 
 	@Override
 	public void onResetClicked() {
-
+		// TODO: reset all fields
 	}
 
 	protected void addInputField(Field field) {
@@ -86,8 +87,15 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			info = "";
 		}
 		getMainPanel().add(prepare(new JLabel(name)));
-		// TODO: print float values without scientific notation
-		getMainPanel().add(prepare(new JTextField(value == null ? "" : value.toString())));
+		String stringValue;
+		if (value == null) {
+			stringValue = "";
+		} else if (value instanceof Float) {
+			stringValue = DecimalUtils.toHumanString((float) value);
+		} else {
+			stringValue = value.toString();
+		}
+		getMainPanel().add(prepare(new JTextField(stringValue)));
 		getMainPanel().add(prepare(new JLabel(info)));
 	}
 

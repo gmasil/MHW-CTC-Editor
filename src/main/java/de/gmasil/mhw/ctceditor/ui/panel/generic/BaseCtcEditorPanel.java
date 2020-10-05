@@ -79,11 +79,11 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 	}
 
 	public void onApplyClicked() {
-		// can be overwritten be subclasses
+		// can be overwritten by subclasses
 	}
 
 	public void onResetClicked() {
-		// can be overwritten be subclasses
+		// can be overwritten by subclasses
 	}
 
 	@Override
