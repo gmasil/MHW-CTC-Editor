@@ -65,15 +65,17 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 	private void addApplyButtons() {
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		// apply button
 		JButton btnApply = new JButton("Apply");
 		btnApply.addActionListener(e -> {
 			onApplyClicked();
 		});
+		controlPanel.add(btnApply);
+		// reset button
 		JButton btnReset = new JButton("Reset");
-		btnApply.addActionListener(e -> {
+		btnReset.addActionListener(e -> {
 			onResetClicked();
 		});
-		controlPanel.add(btnApply);
 		controlPanel.add(btnReset);
 		add(controlPanel, BorderLayout.PAGE_END);
 	}

@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -24,6 +27,8 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	private Class<T> clazz;
 	private boolean dataChanged = false;
+	private Map<JTextField, String> mapInputToField;
+	private Map<String, JTextField> mapFieldToInput;
 
 	public GenericCtcEditorPanel(String title, Class<T> clazz) {
 		super(title, true);
@@ -31,6 +36,8 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 	}
 
 	protected void initFields() {
+		mapInputToField = new HashMap<>();
+		mapFieldToInput = new HashMap<>();
 		for (Field field : clazz.getDeclaredFields()) {
 			addInputField(field);
 		}
@@ -47,7 +54,21 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	@Override
 	public void onResetClicked() {
-		// TODO: reset all fields
+		for (Entry<JTextField, String> entry : mapInputToField.entrySet()) {
+			JTextField textField = entry.getKey();
+			String fieldName = entry.getValue();
+			Object valueToSet;
+			if (fieldName.contains("[")) {
+				String[] split = fieldName.substring(0, fieldName.length() - 1).split("\\[");
+				String arrayFieldName = split[0];
+				int index = Integer.parseInt(split[1]);
+				Field field = getField(arrayFieldName);
+				valueToSet = getValueAsArray(field)[index];
+			} else {
+				valueToSet = getValue(getField(fieldName));
+			}
+			setTextFieldValue(textField, valueToSet);
+		}
 	}
 
 	protected void addInputField(Field field) {
@@ -87,6 +108,15 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			info = "";
 		}
 		getMainPanel().add(prepare(new JLabel(name)));
+		JTextField textField = new JTextField("");
+		setTextFieldValue(textField, value);
+		getMainPanel().add(prepare(textField));
+		getMainPanel().add(prepare(new JLabel(info)));
+		mapInputToField.put(textField, name);
+		mapFieldToInput.put(name, textField);
+	}
+
+	private void setTextFieldValue(JTextField textField, Object value) {
 		String stringValue;
 		if (value == null) {
 			stringValue = "";
@@ -95,8 +125,7 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		} else {
 			stringValue = value.toString();
 		}
-		getMainPanel().add(prepare(new JTextField(stringValue)));
-		getMainPanel().add(prepare(new JLabel(info)));
+		textField.setText(stringValue);
 	}
 
 	protected Object[] getValueAsArray(Field field, Object object) {
@@ -128,13 +157,23 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 	}
 
 	protected Object getValue(Field field, Object object) {
+		String getter = getGetter(field.getName());
 		try {
-			Method method = clazz.getMethod(getGetter(field.getName()));
+			Method method = clazz.getMethod(getter);
 			return method.invoke(object);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Error while invoking method " + getter, e);
+			return null;
 		}
-		return null;
+	}
+
+	private Field getField(String fieldName) {
+		try {
+			return clazz.getDeclaredField(fieldName);
+		} catch (Exception e) {
+			LOG.error("Error while getting declared field " + fieldName, e);
+			return null;
+		}
 	}
 
 	private String getGetter(String fieldName) {
