@@ -139,18 +139,11 @@ public class CtcEditor extends JFrame
 		}
 	}
 
-	// MenuListener
-
 	@Override
-	public void menuOpen() {
-		windowsFileChooser.openDialog();
-	}
-
-	@Override
-	public void menuSave() {
+	public void onFileSaved(File file) {
 		if (currentlyOpenedFile != null) {
 			try {
-				CtcIO.write(treeViewer.getCtc(), currentlyOpenedFile);
+				CtcIO.write(treeViewer.getCtc(), file);
 				LOG.info("CTC file successfully saved to {}", currentlyOpenedFile.getAbsolutePath());
 			} catch (IOException e) {
 				LOG.error("Error while saving CTC file to {}", currentlyOpenedFile.getAbsolutePath(), e);
@@ -158,9 +151,25 @@ public class CtcEditor extends JFrame
 		}
 	}
 
+	// MenuListener
+
+	@Override
+	public void menuOpen() {
+		windowsFileChooser.showOpenDialog();
+	}
+
+	@Override
+	public void menuSave() {
+		if (allowSelectionChange()) {
+			onFileSaved(currentlyOpenedFile);
+		}
+	}
+
 	@Override
 	public void menuSaveAs() {
-		// TODO: implement save operation
+		if (allowSelectionChange()) {
+			windowsFileChooser.showSaveDialog();
+		}
 	}
 
 	@Override

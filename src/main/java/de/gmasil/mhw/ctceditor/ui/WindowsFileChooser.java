@@ -18,22 +18,9 @@ public class WindowsFileChooser implements Serializable {
 		lastOpenedFile = new File(Config.getLastOpenedFile());
 	}
 
-	public void openDialog() {
+	public void showOpenDialog() {
 		PlatformImpl.startup(() -> {
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.getExtensionFilters().add(new ExtensionFilter("CTC files (*.ctc)", "*.ctc"));
-			fileChooser.getExtensionFilters().add(new ExtensionFilter("All files", "*.*"));
-			if (lastOpenedFile != null) {
-				File initialDirectory;
-				if (lastOpenedFile.isFile()) {
-					initialDirectory = lastOpenedFile.getParentFile();
-				} else {
-					initialDirectory = lastOpenedFile;
-				}
-				if (initialDirectory.exists()) {
-					fileChooser.setInitialDirectory(initialDirectory);
-				}
-			}
+			FileChooser fileChooser = createFileChooser();
 			File selectedFile = fileChooser.showOpenDialog(null);
 			if (selectedFile != null) {
 				lastOpenedFile = selectedFile;
@@ -42,5 +29,40 @@ public class WindowsFileChooser implements Serializable {
 				listener.onFileOpened(selectedFile);
 			}
 		});
+	}
+
+	public void showSaveDialog() {
+		PlatformImpl.startup(() -> {
+			FileChooser fileChooser = createFileChooser();
+			File selectedFile = fileChooser.showSaveDialog(null);
+			if (selectedFile != null) {
+				lastOpenedFile = selectedFile;
+				Config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
+				Config.save();
+				listener.onFileSaved(selectedFile);
+			}
+		});
+	}
+
+	private FileChooser createFileChooser() {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("CTC files (*.ctc)", "*.ctc"));
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("All files", "*.*"));
+		setInitialDirectory(fileChooser);
+		return fileChooser;
+	}
+
+	private void setInitialDirectory(FileChooser fileChooser) {
+		if (lastOpenedFile != null) {
+			File initialDirectory;
+			if (lastOpenedFile.isFile()) {
+				initialDirectory = lastOpenedFile.getParentFile();
+			} else {
+				initialDirectory = lastOpenedFile;
+			}
+			if (initialDirectory.exists()) {
+				fileChooser.setInitialDirectory(initialDirectory);
+			}
+		}
 	}
 }
