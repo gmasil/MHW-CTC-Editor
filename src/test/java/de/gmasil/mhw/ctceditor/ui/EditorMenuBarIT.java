@@ -35,7 +35,7 @@ class EditorMenuBarIT {
 		Config.setShowConsole(true);
 		JMenuBar menu = new EditorMenuBar(null);
 		JMenu fileMenu = findMenu(menu, "View");
-		assertThat(fileMenu.getMenuComponentCount(), is(equalTo(1)));
+		assertThat(fileMenu.getMenuComponentCount(), is(equalTo(2)));
 	}
 
 	private JMenu findMenu(JMenuBar menu, String text) {
