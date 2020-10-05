@@ -162,7 +162,7 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			Method method = clazz.getMethod(getter);
 			return method.invoke(object);
 		} catch (Exception e) {
-			LOG.error("Error while invoking method " + getter, e);
+			LOG.error("Error while invoking method {}", getter, e);
 			return null;
 		}
 	}
@@ -171,7 +171,7 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		try {
 			return clazz.getDeclaredField(fieldName);
 		} catch (Exception e) {
-			LOG.error("Error while getting declared field " + fieldName, e);
+			LOG.error("Error while getting declared field {}", fieldName, e);
 			return null;
 		}
 	}
