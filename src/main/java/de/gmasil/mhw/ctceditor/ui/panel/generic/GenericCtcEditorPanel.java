@@ -15,7 +15,6 @@ import java.util.Objects;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -105,6 +104,7 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			}
 			setTextFieldValue(textField, valueToSet);
 		}
+		dataChanged = false;
 	}
 
 	protected void addInputField(Field field) {
@@ -337,12 +337,10 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				lastChange++;
-				SwingUtilities.invokeLater(() -> {
-					if (lastNotifiedChange != lastChange) {
-						lastNotifiedChange = lastChange;
-						changeListener.stateChanged(new ChangeEvent(text));
-					}
-				});
+				if (lastNotifiedChange != lastChange) {
+					lastNotifiedChange = lastChange;
+					changeListener.stateChanged(new ChangeEvent(text));
+				}
 			}
 		};
 		text.addPropertyChangeListener("document", (PropertyChangeEvent e) -> {
