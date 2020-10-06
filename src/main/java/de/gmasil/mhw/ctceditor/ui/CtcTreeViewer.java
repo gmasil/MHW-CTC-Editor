@@ -147,7 +147,7 @@ public class CtcTreeViewer extends JTree {
 		return ctc;
 	}
 
-	private void refreshTree() {
+	public void refreshTree() {
 		if (ctc != null) {
 			rootNode.removeAllChildren();
 			rootNode.setUserObject("CTC File");

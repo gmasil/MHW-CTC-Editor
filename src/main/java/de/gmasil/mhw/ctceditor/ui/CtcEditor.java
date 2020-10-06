@@ -2,12 +2,18 @@ package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -21,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,14 +214,85 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuCopy() {
-		// TODO: implement copy function
-		LOG.info("Copy selection count: {}", treeViewer.getSelectionCount());
+		// TODO: cleanup
+		if (treeViewer.getSelectionCount() == 0) {
+			JOptionPane.showMessageDialog(this, "You have to select an object in the CTC tree view",
+					"Unsupported Operation", JOptionPane.OK_OPTION);
+		} else if (treeViewer.getSelectionCount() == 1) {
+			Object lastPathComponent = ((DefaultMutableTreeNode) treeViewer.getSelectionPath().getLastPathComponent())
+					.getUserObject();
+			String serialized = SerializeUtils.serialize(lastPathComponent);
+			StringSelection selection = new StringSelection(serialized);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selection, selection);
+		} else {
+			JOptionPane.showMessageDialog(this, "It is not possible to copy multiple objects", "Unsupported Operation",
+					JOptionPane.OK_OPTION);
+		}
 	}
 
 	@Override
 	public void menuPaste() {
-		// TODO implement paste function
-		LOG.info("Paste selection count: {}", treeViewer.getSelectionCount());
+		// TODO: cleanup
+		// TODO: make it possible to paste CTC bones
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		try {
+			Transferable t = clipboard.getContents(null);
+			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+				String data = (String) t.getTransferData(DataFlavor.stringFlavor);
+				Object deserialized = SerializeUtils.deserialize(data);
+				if (deserialized != null) {
+					if (deserialized instanceof CtcChain) {
+						CtcChain chain = (CtcChain) deserialized;
+						if (treeViewer.getSelectionCount() == 1) {
+							Object lastPathComponent = ((DefaultMutableTreeNode) treeViewer.getSelectionPath()
+									.getLastPathComponent()).getUserObject();
+							if (lastPathComponent instanceof CtcChain) {
+								CtcChain before = (CtcChain) lastPathComponent;
+								List<CtcChain> chains = treeViewer.getCtc().getChains();
+								int index = -1;
+								for (int i = 0; i < chains.size(); i++) {
+									if (chains.get(i) == before) {
+										index = i;
+										break;
+									}
+								}
+								if (index >= 0) {
+									chains.add(index, chain);
+									treeViewer.getCtc().recalculate();
+									treeViewer.refreshTree();
+									LOG.info("CTC chain was pasted successfully");
+								} else {
+									LOG.error("Error while finding the position to paste CTC chain");
+									JOptionPane.showMessageDialog(this,
+											"Error while finding the position to paste CTC chain",
+											"Unsupported Operation", JOptionPane.OK_OPTION);
+								}
+							} else {
+								LOG.warn("It is only possible to paste a CTC chain when another CTC chain is selected");
+								JOptionPane.showMessageDialog(this,
+										"It is only possible to paste a CTC chain when another CTC chain is selected",
+										"Unsupported Operation", JOptionPane.OK_OPTION);
+							}
+						} else {
+							JOptionPane.showMessageDialog(this,
+									"It is only possible to paste when exactly one object is selected",
+									"Unsupported Operation", JOptionPane.OK_OPTION);
+						}
+					} else {
+						LOG.warn("Currently it is only possible to paste CTC chains");
+						JOptionPane.showMessageDialog(this, "Currently it is only possible to paste CTC chains",
+								"Unsupported Operation", JOptionPane.OK_OPTION);
+					}
+				} else {
+					LOG.warn("Pasted data is not a CTC object");
+					JOptionPane.showMessageDialog(this, "Pasted data is not a CTC object", "Unsupported Operation",
+							JOptionPane.OK_OPTION);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

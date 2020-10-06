@@ -29,6 +29,22 @@ public class Ctc implements Serializable {
 		}
 	}
 
+	/**
+	 * Recalculates the following fields:
+	 * <ul>
+	 * <li>header: bone chain count</li>
+	 * <li>header: bone count</li>
+	 * <li>bone chain: chain length</li>
+	 * </ul>
+	 */
+	public void recalculate() {
+		header.setBoneChainCount(chains.size());
+		header.setBoneCount(getBones().size());
+		for (CtcChain chain : chains) {
+			chain.setChainLength(chain.getBones().size());
+		}
+	}
+
 	public byte[] getBytes() {
 		ByteBuffer buffer = ByteBuffer.allocate(getTotalByteLength());
 		buffer.put(getHeader().getBytes());
