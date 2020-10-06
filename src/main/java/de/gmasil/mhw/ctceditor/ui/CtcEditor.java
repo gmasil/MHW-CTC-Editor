@@ -2,6 +2,7 @@ package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -77,6 +80,7 @@ public class CtcEditor extends JFrame
 
 		// CTC tree left
 		treeViewer = new CtcTreeViewer(this, this, this, this);
+		setupCopyPasteActions();
 		JScrollPane scrollTree = new JScrollPane(treeViewer);
 		scrollTree.setMinimumSize(new Dimension(50, 0));
 		scrollTree.setPreferredSize(new Dimension(500, 500));
@@ -117,6 +121,22 @@ public class CtcEditor extends JFrame
 		if (args.length > 0) {
 			onFileOpened(new File(args[0]));
 		}
+	}
+
+	private void setupCopyPasteActions() {
+		ActionMap actionMap = treeViewer.getActionMap();
+		actionMap.put("copy", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				menuCopy();
+			}
+		});
+		actionMap.put("paste", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				menuPaste();
+			}
+		});
 	}
 
 	private void refreshUI() {
@@ -188,14 +208,13 @@ public class CtcEditor extends JFrame
 	@Override
 	public void menuCopy() {
 		// TODO: implement copy function
-		// TODO: allow CTRL + C menu shortcut, currently prevented due to system copy
-		// action
-		LOG.info("Selection count: {}", treeViewer.getSelectionCount());
+		LOG.info("Copy selection count: {}", treeViewer.getSelectionCount());
 	}
 
 	@Override
 	public void menuPaste() {
 		// TODO implement paste function
+		LOG.info("Paste selection count: {}", treeViewer.getSelectionCount());
 	}
 
 	@Override
