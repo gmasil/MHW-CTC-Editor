@@ -3,6 +3,7 @@ package de.gmasil.mhw.ctceditor.ui;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -38,6 +39,12 @@ public class EditorMenuBar extends JMenuBar {
 		addCloseMenu(menuFile, listener);
 		menuFile.addSeparator();
 		addExitMenu(menuFile, listener);
+		// top menu edit
+		JMenu menuEdit = new JMenu("Edit");
+		menuEdit.setMnemonic(KeyEvent.VK_E);
+		add(menuEdit);
+		addCopyMenu(menuEdit, listener);
+		addPasteMenu(menuEdit, listener);
 		// top menu view
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
@@ -45,6 +52,8 @@ public class EditorMenuBar extends JMenuBar {
 		addShowConsoleMenu(menuView, listener);
 		addShowUnknownFieldsMenu(menuView, listener);
 	}
+
+	// File
 
 	private void addOpenMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuOpen = createJMenuItem("Open ...");
@@ -88,6 +97,28 @@ public class EditorMenuBar extends JMenuBar {
 		setIcon(menuExit, "exit");
 		menuFile.add(menuExit);
 	}
+
+	// Edit
+
+	private void addCopyMenu(JMenu menuEdit, MenuListener listener) {
+		JMenuItem menuCopy = createJMenuItem("Copy");
+		menuCopy.setMnemonic(KeyEvent.VK_C);
+		menuCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		menuCopy.addActionListener(event -> listener.menuCopy());
+		setIcon(menuCopy, "copy");
+		menuEdit.add(menuCopy);
+	}
+
+	private void addPasteMenu(JMenu menuEdit, MenuListener listener) {
+		JMenuItem menuPaste = createJMenuItem("Paste");
+		menuPaste.setMnemonic(KeyEvent.VK_P);
+		menuPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+		menuPaste.addActionListener(event -> listener.menuPaste());
+		setIcon(menuPaste, "paste");
+		menuEdit.add(menuPaste);
+	}
+
+	// View
 
 	private void addShowConsoleMenu(JMenu menuView, MenuListener listener) {
 		JMenuItem menuConsole = createJMenuItem("Show console");

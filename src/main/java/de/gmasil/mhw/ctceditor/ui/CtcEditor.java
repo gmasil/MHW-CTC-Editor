@@ -186,6 +186,19 @@ public class CtcEditor extends JFrame
 	}
 
 	@Override
+	public void menuCopy() {
+		// TODO: implement copy function
+		// TODO: allow CTRL + C menu shortcut, currently prevented due to system copy
+		// action
+		LOG.info("Selection count: {}", treeViewer.getSelectionCount());
+	}
+
+	@Override
+	public void menuPaste() {
+		// TODO implement paste function
+	}
+
+	@Override
 	public boolean menuToggleConsole() {
 		showConsole = !showConsole;
 		updateConsole();

@@ -11,6 +11,10 @@ public interface MenuListener {
 
 	public void menuExit();
 
+	public void menuCopy();
+
+	public void menuPaste();
+
 	public boolean menuToggleConsole();
 
 	public boolean menuToggleUnknownFields();
