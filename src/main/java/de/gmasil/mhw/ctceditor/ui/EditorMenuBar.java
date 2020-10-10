@@ -3,7 +3,6 @@ package de.gmasil.mhw.ctceditor.ui;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -45,6 +44,7 @@ public class EditorMenuBar extends JMenuBar {
 		add(menuEdit);
 		addCopyMenu(menuEdit, listener);
 		addPasteMenu(menuEdit, listener);
+		addDeleteMenu(menuEdit, listener);
 		// top menu view
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
@@ -116,6 +116,15 @@ public class EditorMenuBar extends JMenuBar {
 		menuPaste.addActionListener(event -> listener.menuPaste());
 		setIcon(menuPaste, "paste");
 		menuEdit.add(menuPaste);
+	}
+
+	private void addDeleteMenu(JMenu menuEdit, MenuListener listener) {
+		JMenuItem menuDelete = createJMenuItem("Delete");
+		menuDelete.setMnemonic(KeyEvent.VK_D);
+		menuDelete.setAccelerator(KeyStroke.getKeyStroke("DELETE"));
+		menuDelete.addActionListener(event -> listener.menuDelete());
+		setIcon(menuDelete, "close");
+		menuEdit.add(menuDelete);
 	}
 
 	// View

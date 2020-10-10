@@ -258,7 +258,7 @@ public class CtcEditor extends JFrame
 									}
 								}
 								if (index >= 0) {
-									chains.add(index, chain);
+									chains.add(index + 1, chain);
 									treeViewer.getCtc().recalculate();
 									treeViewer.refreshTree();
 									LOG.info("CTC chain was pasted successfully");
@@ -292,6 +292,29 @@ public class CtcEditor extends JFrame
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void menuDelete() {
+		if (treeViewer.getSelectionCount() == 0) {
+			JOptionPane.showMessageDialog(this, "You have to select an object in the CTC tree view",
+					"Unsupported Operation", JOptionPane.OK_OPTION);
+		} else if (treeViewer.getSelectionCount() == 1) {
+			Object lastPathComponent = ((DefaultMutableTreeNode) treeViewer.getSelectionPath().getLastPathComponent())
+					.getUserObject();
+			if (lastPathComponent instanceof CtcChain) {
+				CtcChain chain = (CtcChain) lastPathComponent;
+				treeViewer.getCtc().getChains().remove(chain);
+				treeViewer.getCtc().recalculate();
+				treeViewer.refreshTree();
+			} else {
+				JOptionPane.showMessageDialog(this, "Currently it is only possible to delete CTC chains",
+						"Unsupported Operation", JOptionPane.OK_OPTION);
+			}
+		} else {
+			JOptionPane.showMessageDialog(this, "It is not possible to delete multiple objects",
+					"Unsupported Operation", JOptionPane.OK_OPTION);
 		}
 	}
 
