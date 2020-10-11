@@ -232,16 +232,18 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuExit() {
-		if (treeViewer.isCtcChanged()) {
-			int showConfirmDialog = JOptionPane.showConfirmDialog(this,
-					"You have unsaved changes to your CTC file, do you really want to exit?", "Unsaved changes",
-					JOptionPane.YES_NO_OPTION);
-			if (showConfirmDialog != JOptionPane.YES_OPTION) {
-				return;
+		if (allowSelectionChange()) {
+			if (treeViewer.isCtcChanged()) {
+				int showConfirmDialog = JOptionPane.showConfirmDialog(this,
+						"You have unsaved changes to your CTC file, do you really want to exit?", "Unsaved changes",
+						JOptionPane.YES_NO_OPTION);
+				if (showConfirmDialog != JOptionPane.YES_OPTION) {
+					return;
+				}
 			}
+			LOG.info("Shutting down MHW CTC Editor");
+			System.exit(0);
 		}
-		LOG.info("Shutting down MHW CTC Editor");
-		System.exit(0);
 	}
 
 	@Override
