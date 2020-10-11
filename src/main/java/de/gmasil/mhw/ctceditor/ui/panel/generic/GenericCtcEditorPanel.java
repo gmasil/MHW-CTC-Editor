@@ -4,6 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import de.gmasil.mhw.ctceditor.ctc.Readonly;
 import de.gmasil.mhw.ctceditor.ctc.Unknown;
 import de.gmasil.mhw.ctceditor.ui.Config;
 import de.gmasil.mhw.ctceditor.ui.DecimalUtils;
+import de.gmasil.mhw.ctceditor.ui.api.CtcChangedCallback;
 import de.gmasil.mhw.ctceditor.ui.api.RepaintTreeCallback;
 
 public abstract class GenericCtcEditorPanel<T extends Serializable> extends BaseCtcEditorPanel {
@@ -35,14 +37,17 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	private Class<T> clazz;
 	private RepaintTreeCallback treeRepainter;
+	private CtcChangedCallback ctcChangedCallback;
 	private boolean dataChanged = false;
 	private Map<JTextField, String> mapInputToField;
 	private Map<String, JTextField> mapFieldToInput;
 
-	public GenericCtcEditorPanel(String title, Class<T> clazz, RepaintTreeCallback treeRepainter) {
+	public GenericCtcEditorPanel(String title, Class<T> clazz, RepaintTreeCallback treeRepainter,
+			CtcChangedCallback ctcChangedCallback) {
 		super(title, true);
 		this.clazz = clazz;
 		this.treeRepainter = treeRepainter;
+		this.ctcChangedCallback = ctcChangedCallback;
 	}
 
 	protected void initFields() {
@@ -57,32 +62,58 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	protected abstract Object getValue(Field field);
 
-	protected abstract void setArrayValue(Field field, Object arrayValue, int index);
+	protected abstract boolean setArrayValue(Field field, Object arrayValue, int index)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 
-	protected abstract void setValue(Field field, Object value);
+	protected abstract boolean setValue(Field field, Object value)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 
 	@Override
 	public void onApplyClicked() {
+		boolean hasCtcDataChanged = false;
 		for (Entry<JTextField, String> entry : mapInputToField.entrySet()) {
 			JTextField textField = entry.getKey();
 			String fieldName = entry.getValue();
 			if (fieldName.contains("[")) {
+				// TODO: data is marked changed in array procedure even if there is no actual
+				// field changed
 				String[] split = fieldName.substring(0, fieldName.length() - 1).split("\\[");
 				String arrayFieldName = split[0];
 				Field field = getField(arrayFieldName);
-				if (field != null && !field.isAnnotationPresent(Readonly.class)) {
+				if (field != null && !field.isAnnotationPresent(Readonly.class)
+						&& textField.getText().trim().length() != 0) {
 					int index = Integer.parseInt(split[1]);
-					setArrayValue(field, textField.getText(), index);
+					try {
+						if (setArrayValue(field, textField.getText(), index)) {
+							hasCtcDataChanged = true;
+						}
+					} catch (NumberFormatException nfe) {
+						handleNumberFormatException(field, textField.getText());
+					} catch (Exception e) {
+						LOG.error("Unexpected error while saving field {}", field.getName(), e);
+					}
 				}
 			} else {
 				Field field = getField(fieldName);
-				if (field != null && !field.isAnnotationPresent(Readonly.class)) {
-					setValue(field, textField.getText());
+				if (field != null && !field.isAnnotationPresent(Readonly.class)
+						&& textField.getText().trim().length() != 0) {
+					try {
+						if (setValue(field, textField.getText())) {
+							hasCtcDataChanged = true;
+						}
+					} catch (NumberFormatException nfe) {
+						handleNumberFormatException(field, textField.getText());
+					} catch (Exception e) {
+						LOG.error("Unexpected error while saving field {}", field.getName(), e);
+					}
 				}
 			}
 		}
 		dataChanged = false;
 		treeRepainter.repaintTree();
+		if (hasCtcDataChanged) {
+			ctcChangedCallback.setCtcChanged(true);
+		}
 	}
 
 	@Override
@@ -204,38 +235,100 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		}
 	}
 
-	protected void setArrayValue(Field field, Object object, Object arrayValue, int index) {
+	protected boolean setArrayValue(Field field, Object object, Object arrayValue, int index)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] currentArray = getArrayValue(field, object);
-		currentArray[index] = arrayValue;
-		setValue(field, object, currentArray);
+		// TODO: do it correctly
+		boolean valueChanged = true;
+		/*-
+		if (field.getType().isInstance(new int[0])) {
+			if ((int) currentArray[index] != (int) arrayValue) {
+				valueChanged = true;
+			}
+		} else if (field.getType().isInstance(new float[0])) {
+			if ((float) currentArray[index] != (float) arrayValue) {
+				valueChanged = true;
+			}
+		} else if (field.getType().isInstance(new byte[0])) {
+			if ((byte) currentArray[index] != (byte) arrayValue) {
+				valueChanged = true;
+			}
+		} else {
+			LOG.error("Unknown argument array type {} setArrayValue(Field, Object, Object, int)", field.getType());
+		}
+		*/
+		if (valueChanged) {
+			currentArray[index] = arrayValue;
+			setValue(field, object, currentArray);
+			return true;
+		}
+		return false;
 	}
 
-	protected void setValue(Field field, Object object, Object value) {
+	protected boolean setValue(Field field, Object object, Object value)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		// TODO: only save single values, save arrays in belonging method
 		String setter = getSetter(field.getName());
-		try {
-			Method method = clazz.getMethod(setter, field.getType());
-			if (field.getType().isArray()) {
-				if (field.getType().isInstance(new int[0])) {
-					method.invoke(object, convertToIntArray(value));
-				} else if (field.getType().isInstance(new float[0])) {
-					method.invoke(object, convertToFloatArray(value));
-				} else if (field.getType().isInstance(new byte[0])) {
-					method.invoke(object, convertToByteArray(value));
-				} else {
-					LOG.error("Unknown argument array type {} during invocation of {}", field.getType(), setter);
-				}
-			} else if (field.getType() == int.class) {
-				method.invoke(object, Integer.parseInt((String) value));
-			} else if (field.getType() == float.class) {
-				method.invoke(object, Float.parseFloat((String) value));
-			} else if (field.getType() == byte.class) {
-				method.invoke(object, Byte.parseByte((String) value));
+		Method method = clazz.getMethod(setter, field.getType());
+		if (field.getType().isArray()) {
+			if (field.getType().isInstance(new int[0])) {
+				// TODO: convert array and then compare with old values
+				method.invoke(object, convertToIntArray(value));
+			} else if (field.getType().isInstance(new float[0])) {
+				method.invoke(object, convertToFloatArray(value));
+			} else if (field.getType().isInstance(new byte[0])) {
+				method.invoke(object, convertToByteArray(value));
 			} else {
-				LOG.error("Unknown argument type {} during invocation of {}", field.getType(), setter);
+				LOG.error("Unknown argument array type {} during invocation of {}", field.getType(), setter);
 			}
-		} catch (Exception e) {
-			LOG.error("Error while invoking method {}", setter, e);
+		} else if (field.getType() == int.class) {
+			return handleIntValue(field, object, value, method);
+		} else if (field.getType() == float.class) {
+			return handleFloatValue(field, object, value, method);
+		} else if (field.getType() == byte.class) {
+			return handleByteValue(field, object, value, method);
+		} else {
+			LOG.error("Unknown argument type {} during invocation of {}", field.getType(), setter);
 		}
+		return false;
+	}
+
+	private boolean handleIntValue(Field field, Object object, Object value, Method method)
+			throws IllegalAccessException, InvocationTargetException {
+		int oldValue = (int) getValue(field, object);
+		int newValue = Integer.parseInt((String) value);
+		if (oldValue != newValue) {
+			method.invoke(object, newValue);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean handleFloatValue(Field field, Object object, Object value, Method method)
+			throws IllegalAccessException, InvocationTargetException {
+		float oldValue = (float) getValue(field, object);
+		float newValue = Float.parseFloat((String) value);
+		if (oldValue != newValue) {
+			method.invoke(object, newValue);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean handleByteValue(Field field, Object object, Object value, Method method)
+			throws IllegalAccessException, InvocationTargetException {
+		byte oldValue = (byte) getValue(field, object);
+		byte newValue = Byte.parseByte((String) value);
+		if (oldValue != newValue) {
+			method.invoke(object, newValue);
+			return true;
+		}
+		return false;
+	}
+
+	private void handleNumberFormatException(Field field, Object value) {
+		LOG.error("Cannot assign value '{}' to field {} of type {}", value, field.getName(),
+				field.getType().getSimpleName());
 	}
 
 	private int[] convertToIntArray(Object object) {

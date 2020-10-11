@@ -160,6 +160,7 @@ public class CtcEditor extends JFrame
 	public void onFileOpened(File file) {
 		try {
 			treeViewer.setCtc(CtcIO.readFile(file));
+			treeViewer.setCtcChanged(false);
 			currentlyOpenedFile = file;
 			LOG.info("CTC file loaded successfully: {}", file.getAbsolutePath());
 			setMainText(SELECT_INFO);
@@ -173,6 +174,7 @@ public class CtcEditor extends JFrame
 		if (currentlyOpenedFile != null) {
 			try {
 				CtcIO.write(treeViewer.getCtc(), file);
+				treeViewer.setCtcChanged(false);
 				LOG.info("CTC file successfully saved to {}", currentlyOpenedFile.getAbsolutePath());
 			} catch (IOException e) {
 				LOG.error("Error while saving CTC file to {}", currentlyOpenedFile.getAbsolutePath(), e);
@@ -205,11 +207,20 @@ public class CtcEditor extends JFrame
 	public void menuClose() {
 		setMainText(SELECT_INFO);
 		treeViewer.setCtc(null);
+		treeViewer.setCtcChanged(false);
 		currentlyOpenedFile = null;
 	}
 
 	@Override
 	public void menuExit() {
+		if (treeViewer.isCtcChanged()) {
+			int showConfirmDialog = JOptionPane.showConfirmDialog(this,
+					"You have unsaved changes to your CTC file, do you really want to exit?", "Unsaved changes",
+					JOptionPane.YES_NO_OPTION);
+			if (showConfirmDialog != JOptionPane.YES_OPTION) {
+				return;
+			}
+		}
 		LOG.info("Shutting down MHW CTC Editor");
 		System.exit(0);
 	}
@@ -263,6 +274,7 @@ public class CtcEditor extends JFrame
 									chains.add(index + 1, chain);
 									treeViewer.getCtc().recalculate();
 									treeViewer.refreshTree();
+									treeViewer.setCtcChanged(true);
 									LOG.info("CTC chain was pasted successfully");
 								} else {
 									LOG.error("Error while finding the position to paste CTC chain");
@@ -310,6 +322,7 @@ public class CtcEditor extends JFrame
 				treeViewer.getCtc().getChains().remove(chain);
 				treeViewer.getCtc().recalculate();
 				treeViewer.refreshTree();
+				treeViewer.setCtcChanged(true);
 			} else {
 				JOptionPane.showMessageDialog(this, "Currently it is only possible to delete CTC chains",
 						"Unsupported Operation", JOptionPane.OK_OPTION);
@@ -337,13 +350,13 @@ public class CtcEditor extends JFrame
 			Config.save();
 			if (getMainPanel() instanceof CtcHeaderEditorPanel) {
 				CtcHeaderEditorPanel panel = (CtcHeaderEditorPanel) getMainPanel();
-				setMainPanel(new CtcHeaderEditorPanel(panel.getObject(), this));
+				setMainPanel(new CtcHeaderEditorPanel(panel.getObject(), this, treeViewer));
 			} else if (getMainPanel() instanceof CtcChainEditorPanel) {
 				CtcChainEditorPanel panel = (CtcChainEditorPanel) getMainPanel();
-				setMainPanel(new CtcChainEditorPanel(panel.getObjectSet(), this));
+				setMainPanel(new CtcChainEditorPanel(panel.getObjectSet(), this, treeViewer));
 			} else if (getMainPanel() instanceof CtcBoneEditorPanel) {
 				CtcBoneEditorPanel panel = (CtcBoneEditorPanel) getMainPanel();
-				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet(), this));
+				setMainPanel(new CtcBoneEditorPanel(panel.getObjectSet(), this, treeViewer));
 			}
 		}
 		return showUnknownFields;
@@ -353,17 +366,17 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void onHeaderSelected(CtcHeader header) {
-		setMainPanel(new CtcHeaderEditorPanel(header, this));
+		setMainPanel(new CtcHeaderEditorPanel(header, this, treeViewer));
 	}
 
 	@Override
 	public void onChainSelected(Set<CtcChain> chains) {
-		setMainPanel(new CtcChainEditorPanel(chains, this));
+		setMainPanel(new CtcChainEditorPanel(chains, this, treeViewer));
 	}
 
 	@Override
 	public void onBoneSelected(Set<CtcBone> bones) {
-		setMainPanel(new CtcBoneEditorPanel(bones, this));
+		setMainPanel(new CtcBoneEditorPanel(bones, this, treeViewer));
 	}
 
 	@Override

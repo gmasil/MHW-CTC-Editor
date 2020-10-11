@@ -36,13 +36,29 @@ public class Ctc implements Serializable {
 	 * <li>header: bone count</li>
 	 * <li>bone chain: chain length</li>
 	 * </ul>
+	 * 
+	 * @return boolean true if data has been changed
 	 */
-	public void recalculate() {
-		header.setBoneChainCount(chains.size());
-		header.setBoneCount(getBones().size());
-		for (CtcChain chain : chains) {
-			chain.setChainLength(chain.getBones().size());
+	public boolean recalculate() {
+		boolean dataChanged = false;
+		int chainCount = chains.size();
+		if (header.getBoneChainCount() != chainCount) {
+			header.setBoneChainCount(chainCount);
+			dataChanged = true;
 		}
+		int boneCount = getBones().size();
+		if (header.getBoneCount() != boneCount) {
+			header.setBoneCount(boneCount);
+			dataChanged = true;
+		}
+		for (CtcChain chain : chains) {
+			int chainLength = chain.getBones().size();
+			if (chain.getChainLength() != chainLength) {
+				chain.setChainLength(chainLength);
+				dataChanged = true;
+			}
+		}
+		return dataChanged;
 	}
 
 	public byte[] getBytes() {

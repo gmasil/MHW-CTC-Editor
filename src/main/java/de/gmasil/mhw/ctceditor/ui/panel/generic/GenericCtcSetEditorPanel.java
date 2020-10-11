@@ -2,15 +2,18 @@ package de.gmasil.mhw.ctceditor.ui.panel.generic;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import de.gmasil.mhw.ctceditor.ui.api.CtcChangedCallback;
 import de.gmasil.mhw.ctceditor.ui.api.RepaintTreeCallback;
 
 public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtcEditorPanel<T> {
 	private Set<T> objectSet;
 
-	public GenericCtcSetEditorPanel(String title, Class<T> clazz, Set<T> objectSet, RepaintTreeCallback treeRepainter) {
-		super(title, clazz, treeRepainter);
+	public GenericCtcSetEditorPanel(String title, Class<T> clazz, Set<T> objectSet, RepaintTreeCallback treeRepainter,
+			CtcChangedCallback ctcChangedCallback) {
+		super(title, clazz, treeRepainter, ctcChangedCallback);
 		this.objectSet = objectSet;
 		initFields();
 	}
@@ -47,18 +50,28 @@ public class GenericCtcSetEditorPanel<T extends Serializable> extends GenericCtc
 	}
 
 	@Override
-	protected void setArrayValue(Field field, Object arrayValue, int index) {
+	protected boolean setArrayValue(Field field, Object arrayValue, int index)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] original = objectSet.toArray();
+		boolean changed = false;
 		for (int i = 0; i < original.length; i++) {
-			setArrayValue(field, original[i], arrayValue, index);
+			if (setArrayValue(field, original[i], arrayValue, index)) {
+				changed = true;
+			}
 		}
+		return changed;
 	}
 
 	@Override
-	protected void setValue(Field field, Object value) {
+	protected boolean setValue(Field field, Object value)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		Object[] original = objectSet.toArray();
+		boolean changed = false;
 		for (int i = 0; i < original.length; i++) {
-			setValue(field, original[i], value);
+			if (setValue(field, original[i], value)) {
+				changed = true;
+			}
 		}
+		return changed;
 	}
 }

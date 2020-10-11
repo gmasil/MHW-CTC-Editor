@@ -26,15 +26,17 @@ import de.gmasil.mhw.ctceditor.ctc.CtcBone;
 import de.gmasil.mhw.ctceditor.ctc.CtcChain;
 import de.gmasil.mhw.ctceditor.ctc.CtcHeader;
 import de.gmasil.mhw.ctceditor.ui.api.AllowSelectionCallback;
+import de.gmasil.mhw.ctceditor.ui.api.CtcChangedCallback;
 import de.gmasil.mhw.ctceditor.ui.api.FileOpenedListener;
 import de.gmasil.mhw.ctceditor.ui.api.SelectionListener;
 
-public class CtcTreeViewer extends JTree {
+public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	public static final String DEFAULT_ROOT_TEXT = "Drag a CTC file into this window or use the open menu";
 
 	private DefaultMutableTreeNode rootNode;
 	private Ctc ctc = null;
+	private boolean isCtcChanged = false;
 
 	public CtcTreeViewer(Component parent, FileOpenedListener fileListener, SelectionListener selectionListener,
 			AllowSelectionCallback allowSellectionCallback) {
@@ -192,5 +194,15 @@ public class CtcTreeViewer extends JTree {
 				super.setSelectionPath(path);
 			}
 		}
+	}
+
+	@Override
+	public boolean isCtcChanged() {
+		return isCtcChanged;
+	}
+
+	@Override
+	public void setCtcChanged(boolean changed) {
+		isCtcChanged = changed;
 	}
 }
