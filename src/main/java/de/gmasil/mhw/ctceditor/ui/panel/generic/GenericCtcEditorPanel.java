@@ -237,29 +237,52 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	protected boolean setArrayValue(Field field, Object object, Object arrayValue, int index)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		String setter = getSetter(field.getName());
+		Method method = clazz.getMethod(setter, field.getType());
 		Object[] currentArray = getArrayValue(field, object);
-		// TODO: do it correctly
-		boolean valueChanged = true;
-		/*-
 		if (field.getType().isInstance(new int[0])) {
-			if ((int) currentArray[index] != (int) arrayValue) {
-				valueChanged = true;
-			}
+			return handleIntArrayValue(object, arrayValue, index, method, currentArray);
 		} else if (field.getType().isInstance(new float[0])) {
-			if ((float) currentArray[index] != (float) arrayValue) {
-				valueChanged = true;
-			}
+			return handleFloatArrayValue(object, arrayValue, index, method, currentArray);
 		} else if (field.getType().isInstance(new byte[0])) {
-			if ((byte) currentArray[index] != (byte) arrayValue) {
-				valueChanged = true;
-			}
+			return handleByteArrayValue(object, arrayValue, index, method, currentArray);
 		} else {
-			LOG.error("Unknown argument array type {} setArrayValue(Field, Object, Object, int)", field.getType());
+			LOG.error("Unknown argument array type {} during invocation of {}", field.getType(), setter);
 		}
-		*/
-		if (valueChanged) {
-			currentArray[index] = arrayValue;
-			setValue(field, object, currentArray);
+		return false;
+	}
+
+	private boolean handleIntArrayValue(Object object, Object arrayValue, int index, Method method,
+			Object[] currentArray) throws IllegalAccessException, InvocationTargetException {
+		int[] currentIntArray = convertToIntArray(currentArray);
+		int intArrayValue = Integer.parseInt((String) arrayValue);
+		if (currentIntArray[index] != intArrayValue) {
+			currentIntArray[index] = intArrayValue;
+			method.invoke(object, currentIntArray);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean handleFloatArrayValue(Object object, Object arrayValue, int index, Method method,
+			Object[] currentArray) throws IllegalAccessException, InvocationTargetException {
+		float[] currentFloatArray = convertToFloatArray(currentArray);
+		float floatArrayValue = Float.parseFloat((String) arrayValue);
+		if (currentFloatArray[index] != floatArrayValue) {
+			currentFloatArray[index] = floatArrayValue;
+			method.invoke(object, currentFloatArray);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean handleByteArrayValue(Object object, Object arrayValue, int index, Method method,
+			Object[] currentArray) throws IllegalAccessException, InvocationTargetException {
+		byte[] currentByteArray = convertToByteArray(currentArray);
+		byte byteArrayValue = Byte.parseByte((String) arrayValue);
+		if (currentByteArray[index] != byteArrayValue) {
+			currentByteArray[index] = byteArrayValue;
+			method.invoke(object, currentByteArray);
 			return true;
 		}
 		return false;
@@ -267,21 +290,9 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 
 	protected boolean setValue(Field field, Object object, Object value)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		// TODO: only save single values, save arrays in belonging method
 		String setter = getSetter(field.getName());
 		Method method = clazz.getMethod(setter, field.getType());
-		if (field.getType().isArray()) {
-			if (field.getType().isInstance(new int[0])) {
-				// TODO: convert array and then compare with old values
-				method.invoke(object, convertToIntArray(value));
-			} else if (field.getType().isInstance(new float[0])) {
-				method.invoke(object, convertToFloatArray(value));
-			} else if (field.getType().isInstance(new byte[0])) {
-				method.invoke(object, convertToByteArray(value));
-			} else {
-				LOG.error("Unknown argument array type {} during invocation of {}", field.getType(), setter);
-			}
-		} else if (field.getType() == int.class) {
+		if (field.getType() == int.class) {
 			return handleIntValue(field, object, value, method);
 		} else if (field.getType() == float.class) {
 			return handleFloatValue(field, object, value, method);
