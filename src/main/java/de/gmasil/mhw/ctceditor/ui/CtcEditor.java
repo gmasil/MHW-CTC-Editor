@@ -2,6 +2,7 @@ package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -13,9 +14,11 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
@@ -120,6 +123,9 @@ public class CtcEditor extends JFrame
 		// main panel
 		setMainText("");
 
+		// set icons
+		setApplicationIcons();
+
 		this.setVisible(true);
 		updateConsole();
 
@@ -130,6 +136,19 @@ public class CtcEditor extends JFrame
 		if (args.length > 0) {
 			onFileOpened(new File(args[0]));
 		}
+	}
+
+	private void setApplicationIcons() {
+		String[] fileNames = new String[] { "/img/app-icon-20.png", "/img/app-icon-40.png" };
+		List<Image> images = new LinkedList<>();
+		for (String fileName : fileNames) {
+			try {
+				images.add(ImageIO.read(getClass().getResourceAsStream(fileName)));
+			} catch (Exception e) {
+				LOG.warn("Could not load app icon {}", fileName);
+			}
+		}
+		setIconImages(images);
 	}
 
 	private void setupCopyPasteActions() {
