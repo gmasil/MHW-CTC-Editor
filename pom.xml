@@ -18,20 +18,9 @@
 		<logback.version>1.2.3</logback.version>
 		<commons.version>2.8.0</commons.version>
 		<jansi.version>1.18</jansi.version>
-		<junit-jupiter.version>5.5.2</junit-jupiter.version>
-		<junit-platform.version>1.5.2</junit-platform.version>
-		<hamcrest.version>2.2</hamcrest.version>
-		<mockito.version>3.2.0</mockito.version>
 		<!-- plugin versions -->
-		<surefire-plugin.version>2.22.2</surefire-plugin.version>
-		<failsafe-plugin.version>2.22.2</failsafe-plugin.version>
-		<jacoco-plugin.version>0.8.6</jacoco-plugin.version>
-		<resources-plugin.version>3.2.0</resources-plugin.version>
 		<assembly-plugin.version>3.3.0</assembly-plugin.version>
 		<copy-rename-plugin.version>1.0.1</copy-rename-plugin.version>
-		<!-- skip test config -->
-		<skipITs>true</skipITs>
-		<skip.surefire.tests>${skipTests}</skip.surefire.tests>
 	</properties>
 
 	<dependencies>
@@ -55,157 +44,10 @@
 			<artifactId>jansi</artifactId>
 			<version>${jansi.version}</version>
 		</dependency>
-		<!-- jupiter -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>${junit-platform.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-launcher</artifactId>
-			<version>${junit-platform.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- hamcrest -->
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest</artifactId>
-			<version>${hamcrest.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- mockito -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>full-build</id>
-			<properties>
-				<skipITs>false</skipITs>
-				<skip.surefire.tests>false</skip.surefire.tests>
-			</properties>
-		</profile>
-		<profile>
-			<id>integration-tests-only</id>
-			<properties>
-				<skipITs>false</skipITs>
-				<skip.surefire.tests>true</skip.surefire.tests>
-			</properties>
-		</profile>
-		<profile>
-			<id>create-docs</id>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
-			<!-- surefire -->
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${surefire-plugin.version}</version>
-				<configuration>
-					<skipTests>${skip.surefire.tests}</skipTests>
-					<argLine>${argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
-				</configuration>
-			</plugin>
-			<!-- failsafe -->
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${failsafe-plugin.version}</version>
-				<configuration>
-					<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- jacoco -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco-plugin.version}</version>
-				<executions>
-					<!-- unit tests -->
-					<execution>
-						<id>prepare</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<destFile>${project.build.directory}/jacoco.exec</destFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<dataFile>${project.build.directory}/jacoco.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco/</outputDirectory>
-						</configuration>
-					</execution>
-					<!-- integration tests -->
-					<execution>
-						<id>prepare-it</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<destFile>${project.build.directory}/jacoco-it.exec</destFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>report-it</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-it/</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- build fat jar -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
