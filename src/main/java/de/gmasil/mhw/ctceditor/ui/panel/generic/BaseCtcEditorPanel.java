@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import de.gmasil.mhw.ctceditor.ui.api.DataChangedCallback;
+import net.miginfocom.swing.MigLayout;
 
 public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 	private JPanel mainPanel = new JPanel();
@@ -34,8 +34,8 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 	public BaseCtcEditorPanel(String title, boolean applicable) {
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
 		setLayout(new BorderLayout());
-		getMainPanel().setLayout(new GridLayout(0, 3, 10, 10));
-		JScrollPane scrollMainPanel = new JScrollPane(mainPanel);
+		getMainPanel().setLayout(new MigLayout("wrap 3"));
+		JScrollPane scrollMainPanel = new JScrollPane(getMainPanel());
 		scrollMainPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		scrollMainPanel.setMinimumSize(new Dimension(50, 50));
 		scrollMainPanel.setPreferredSize(new Dimension(500, 500));

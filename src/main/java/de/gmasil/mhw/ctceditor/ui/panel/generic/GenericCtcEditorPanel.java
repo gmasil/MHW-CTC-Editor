@@ -1,7 +1,5 @@
 package de.gmasil.mhw.ctceditor.ui.panel.generic;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -144,13 +142,13 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		if (info == null) {
 			info = "";
 		}
-		getMainPanel().add(prepare(new JLabel(name)));
+		getMainPanel().add(new JLabel(name));
 		JTextField textField = new JTextField("");
 		textField.setEditable(!readonly);
 		setTextFieldValue(textField, value);
 		addChangeListener(textField, e -> dataChanged = true);
-		getMainPanel().add(prepare(textField));
-		getMainPanel().add(prepare(new JLabel(info)));
+		getMainPanel().add(textField, "w 120::");
+		getMainPanel().add(new JLabel(info));
 		mapInputToField.put(textField, name);
 		mapFieldToInput.put(name, textField);
 	}
@@ -303,13 +301,6 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		getter.append(("" + fieldName.charAt(0)).toUpperCase());
 		getter.append(fieldName.substring(1));
 		return getter.toString();
-	}
-
-	private Component prepare(Component component) {
-		component.setMinimumSize(new Dimension(0, 20));
-		component.setMaximumSize(new Dimension(999, 20));
-		component.setPreferredSize(new Dimension(50, 20));
-		return component;
 	}
 
 	@Override

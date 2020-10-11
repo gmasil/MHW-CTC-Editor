@@ -53,6 +53,8 @@ public class CtcEditor extends JFrame
 	private static final String SELECT_INFO = "Select one or multiple objects on the left";
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	private static final int DIVIDER_SIZE = 4;
+	private static final double DEFAULT_DEVIDIER_LOCATION_LEFT_RIGHT = 0.5D;
+	private static final double DEFAULT_DEVIDIER_LOCATION_TOP_BOTTOM = 0.7D;
 
 	private CtcTreeViewer treeViewer;
 	private WindowsFileChooser windowsFileChooser = new WindowsFileChooser(this);
@@ -122,8 +124,8 @@ public class CtcEditor extends JFrame
 		updateConsole();
 
 		// set default divider locations
-		splitTreeAndMain.setDividerLocation(0.3D);
-		splitTopBottom.setDividerLocation(0.7D);
+		splitTreeAndMain.setDividerLocation(DEFAULT_DEVIDIER_LOCATION_LEFT_RIGHT);
+		splitTopBottom.setDividerLocation(DEFAULT_DEVIDIER_LOCATION_TOP_BOTTOM);
 
 		if (args.length > 0) {
 			onFileOpened(new File(args[0]));
@@ -430,7 +432,7 @@ public class CtcEditor extends JFrame
 				splitTopBottom.setDividerLocation(dividerLocation);
 			} else {
 				refreshUI();
-				splitTopBottom.setDividerLocation(0.7D);
+				splitTopBottom.setDividerLocation(DEFAULT_DEVIDIER_LOCATION_TOP_BOTTOM);
 				showConsoleOnStartup = true;
 			}
 		} else {
