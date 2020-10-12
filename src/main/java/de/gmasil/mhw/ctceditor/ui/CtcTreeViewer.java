@@ -8,6 +8,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -198,16 +199,17 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 	}
 
 	public boolean searchBoneFunctionId(int id) {
+		List<TreePath> treePaths = new LinkedList<>();
 		for (CtcChain chain : getCtc().getChains()) {
 			for (CtcBone bone : chain.getBones()) {
 				if (bone.getBoneFunctionID() == id) {
-					setSelectionPaths(
-							new TreePath[] { getTreePathInChainsByCtcBone(bone), getTreePathInBonesByCtcBone(bone) });
-					return true;
+					treePaths.add(getTreePathInChainsByCtcBone(bone));
+					treePaths.add(getTreePathInBonesByCtcBone(bone));
 				}
 			}
 		}
-		return false;
+		setSelectionPaths(treePaths.toArray(new TreePath[0]));
+		return !treePaths.isEmpty();
 	}
 
 	public TreePath getTreePathInChainsByCtcBone(CtcBone ctcBone) {
