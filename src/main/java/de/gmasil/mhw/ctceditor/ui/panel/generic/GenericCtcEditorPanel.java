@@ -140,9 +140,9 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 				valueToSet = getValue(getField(fieldName));
 			}
 			setTextFieldValue(textField, valueToSet);
+			setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
 		}
 		dataChanged = false;
-		setAllTextFieldBorderColors(Color.LIGHT_GRAY);
 	}
 
 	protected void addInputField(Field field) {
@@ -195,12 +195,6 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			dataChanged = true;
 			setTextFieldBorderColor(textField, Color.BLUE);
 		});
-	}
-
-	private void setAllTextFieldBorderColors(Color color) {
-		for (JTextField textField : mapInputToField.keySet()) {
-			setTextFieldBorderColor(textField, color);
-		}
 	}
 
 	private void setTextFieldBorderColor(JTextField textField, Color color) {
