@@ -77,43 +77,13 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			JTextField textField = entry.getKey();
 			String fieldName = entry.getValue();
 			if (fieldName.contains("[")) {
-				// TODO: data is marked changed in array procedure even if there is no actual
-				// field changed
-				String[] split = fieldName.substring(0, fieldName.length() - 1).split("\\[");
-				String arrayFieldName = split[0];
-				Field field = getField(arrayFieldName);
-				if (field != null && !field.isAnnotationPresent(Readonly.class)
-						&& textField.getText().trim().length() != 0) {
-					int index = Integer.parseInt(split[1]);
-					try {
-						if (setArrayValue(field, textField.getText(), index)) {
-							hasCtcDataChanged = true;
-						}
-						setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
-					} catch (NumberFormatException nfe) {
-						handleNumberFormatException(field, textField.getText());
-						setTextFieldBorderColor(textField, Color.RED);
-					} catch (Exception e) {
-						LOG.error("Unexpected error while saving field {}", field.getName(), e);
-						setTextFieldBorderColor(textField, Color.RED);
-					}
+				// if field belongs to an array
+				if (handleApplyArrayField(textField, fieldName)) {
+					hasCtcDataChanged = true;
 				}
 			} else {
-				Field field = getField(fieldName);
-				if (field != null && !field.isAnnotationPresent(Readonly.class)
-						&& textField.getText().trim().length() != 0) {
-					try {
-						if (setValue(field, textField.getText())) {
-							hasCtcDataChanged = true;
-						}
-						setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
-					} catch (NumberFormatException nfe) {
-						handleNumberFormatException(field, textField.getText());
-						setTextFieldBorderColor(textField, Color.RED);
-					} catch (Exception e) {
-						LOG.error("Unexpected error while saving field {}", field.getName(), e);
-						setTextFieldBorderColor(textField, Color.RED);
-					}
+				if (handleApplyField(textField, fieldName)) {
+					hasCtcDataChanged = true;
 				}
 			}
 		}
@@ -122,6 +92,49 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		if (hasCtcDataChanged) {
 			ctcChangedCallback.setCtcChanged(true);
 		}
+	}
+
+	private boolean handleApplyArrayField(JTextField textField, String fieldName) {
+		boolean hasCtcDataChanged = false;
+		String[] split = fieldName.substring(0, fieldName.length() - 1).split("\\[");
+		String arrayFieldName = split[0];
+		Field field = getField(arrayFieldName);
+		if (field != null && !field.isAnnotationPresent(Readonly.class) && textField.getText().trim().length() != 0) {
+			int index = Integer.parseInt(split[1]);
+			try {
+				if (setArrayValue(field, textField.getText(), index)) {
+					hasCtcDataChanged = true;
+				}
+				setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
+			} catch (NumberFormatException nfe) {
+				handleNumberFormatException(field, textField.getText());
+				setTextFieldBorderColor(textField, Color.RED);
+			} catch (Exception e) {
+				LOG.error("Unexpected error while saving field {}", field.getName(), e);
+				setTextFieldBorderColor(textField, Color.RED);
+			}
+		}
+		return hasCtcDataChanged;
+	}
+
+	private boolean handleApplyField(JTextField textField, String fieldName) {
+		boolean hasCtcDataChanged = false;
+		Field field = getField(fieldName);
+		if (field != null && !field.isAnnotationPresent(Readonly.class) && textField.getText().trim().length() != 0) {
+			try {
+				if (setValue(field, textField.getText())) {
+					hasCtcDataChanged = true;
+				}
+				setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
+			} catch (NumberFormatException nfe) {
+				handleNumberFormatException(field, textField.getText());
+				setTextFieldBorderColor(textField, Color.RED);
+			} catch (Exception e) {
+				LOG.error("Unexpected error while saving field {}", field.getName(), e);
+				setTextFieldBorderColor(textField, Color.RED);
+			}
+		}
+		return hasCtcDataChanged;
 	}
 
 	@Override

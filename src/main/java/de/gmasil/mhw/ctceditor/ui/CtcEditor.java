@@ -329,7 +329,7 @@ public class CtcEditor extends JFrame
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Error while performing clipboard operation", e);
 		}
 	}
 
