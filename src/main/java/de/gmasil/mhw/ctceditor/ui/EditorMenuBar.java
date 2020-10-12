@@ -2,7 +2,6 @@ package de.gmasil.mhw.ctceditor.ui;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -72,7 +71,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addOpenMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuOpen = createJMenuItem("Open ...");
 		menuOpen.setMnemonic(KeyEvent.VK_O);
-		menuOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		menuOpen.setAccelerator(KeyStroke.getKeyStroke("control O"));
 		menuOpen.addActionListener(event -> listener.menuOpen());
 		setIcon(menuOpen, "folder");
 		menuFile.add(menuOpen);
@@ -81,7 +80,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addSaveMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuSave = createJMenuItem("Save");
 		menuSave.setMnemonic(KeyEvent.VK_S);
-		menuSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuSave.setAccelerator(KeyStroke.getKeyStroke("control S"));
 		menuSave.addActionListener(event -> listener.menuSave());
 		setIcon(menuSave, "save");
 		menuFile.add(menuSave);
@@ -90,6 +89,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addSaveAsMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuSaveAs = createJMenuItem("Save as ...");
 		menuSaveAs.setMnemonic(KeyEvent.VK_A);
+		menuSaveAs.setAccelerator(KeyStroke.getKeyStroke("control shift S"));
 		menuSaveAs.setDisplayedMnemonicIndex(5);
 		menuSaveAs.addActionListener(event -> listener.menuSaveAs());
 		menuFile.add(menuSaveAs);
@@ -98,7 +98,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addCloseMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuClose = createJMenuItem("Close");
 		menuClose.setMnemonic(KeyEvent.VK_C);
-		menuClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
+		menuClose.setAccelerator(KeyStroke.getKeyStroke("control W"));
 		menuClose.addActionListener(event -> listener.menuClose());
 		setIcon(menuClose, "close");
 		menuFile.add(menuClose);
@@ -107,6 +107,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addExitMenu(JMenu menuFile, MenuListener listener) {
 		JMenuItem menuExit = createJMenuItem("Exit");
 		menuExit.setMnemonic(KeyEvent.VK_X);
+		menuExit.setAccelerator(KeyStroke.getKeyStroke("control Q"));
 		menuExit.addActionListener(event -> listener.menuExit());
 		setIcon(menuExit, "exit");
 		menuFile.add(menuExit);
@@ -117,7 +118,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addCopyMenu(JMenu menuEdit, MenuListener listener) {
 		JMenuItem menuCopy = createJMenuItem("Copy");
 		menuCopy.setMnemonic(KeyEvent.VK_C);
-		menuCopy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		menuCopy.setAccelerator(KeyStroke.getKeyStroke("control C"));
 		menuCopy.addActionListener(event -> listener.menuCopy());
 		setIcon(menuCopy, "copy");
 		menuEdit.add(menuCopy);
@@ -126,7 +127,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addPasteMenu(JMenu menuEdit, MenuListener listener) {
 		JMenuItem menuPaste = createJMenuItem("Paste");
 		menuPaste.setMnemonic(KeyEvent.VK_P);
-		menuPaste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+		menuPaste.setAccelerator(KeyStroke.getKeyStroke("control V"));
 		menuPaste.addActionListener(event -> listener.menuPaste());
 		setIcon(menuPaste, "paste");
 		menuEdit.add(menuPaste);
@@ -146,7 +147,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addFindBoneFunctionIdMenu(JMenu menuFind, MenuListener listener) {
 		JMenuItem menuFindBoneFunctionId = createJMenuItem("Bone Function ID");
 		menuFindBoneFunctionId.setMnemonic(KeyEvent.VK_B);
-		menuFindBoneFunctionId.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+		menuFindBoneFunctionId.setAccelerator(KeyStroke.getKeyStroke("control F"));
 		menuFindBoneFunctionId.addActionListener(event -> listener.menuFindBoneFunctionID());
 		setIcon(menuFindBoneFunctionId, "search");
 		menuFind.add(menuFindBoneFunctionId);
@@ -155,7 +156,7 @@ public class EditorMenuBar extends JMenuBar {
 	private void addFindDuplucateBoneFunctionIdsMenu(JMenu menuFind, MenuListener listener) {
 		JMenuItem menuFindDuplicateBoneFunctionIds = createJMenuItem("Duplicate Bone Function IDs");
 		menuFindDuplicateBoneFunctionIds.setMnemonic(KeyEvent.VK_D);
-		menuFindDuplicateBoneFunctionIds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		menuFindDuplicateBoneFunctionIds.setAccelerator(KeyStroke.getKeyStroke("control D"));
 		menuFindDuplicateBoneFunctionIds.addActionListener(event -> listener.menuFindDuplicateBoneFunctionIDs());
 		setIcon(menuFindDuplicateBoneFunctionIds, "search-file");
 		menuFind.add(menuFindDuplicateBoneFunctionIds);
