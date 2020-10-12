@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.gmasil.mhw.ctceditor.ui.AppParameters;
 import de.gmasil.mhw.ctceditor.ui.CtcEditor;
 
 public class CtcEditorStarter {
@@ -22,8 +23,18 @@ public class CtcEditorStarter {
 	private static String version = "Dev";
 	private static String revision = "0";
 
-	public static void main(String[] args) {
+	private CtcEditorStarter() {
+	}
+
+	public static void start(String... args) {
 		LOG.info("MHW CTC Editor is starting");
+		AppParameters params = new AppParameters(args);
+		if (params.isBatchMode()) {
+			LOG.info("Running in batch mode, disabling ansi colors");
+		}
+		if (params.isColorMode()) {
+			LOG.info("Running in color mode, enforcing ansi colors");
+		}
 		copyStarterFile();
 		if (!isRunningFromIde) {
 			try {
@@ -39,7 +50,7 @@ public class CtcEditorStarter {
 			} catch (Exception e) {
 				LOG.info("Could not set system look and feel");
 			}
-			new CtcEditor(args);
+			new CtcEditor(params.getFileNames());
 		});
 	}
 

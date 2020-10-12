@@ -71,7 +71,7 @@ public class CtcEditor extends JFrame
 	private BaseCtcEditorPanel mainPanel;
 	private File currentlyOpenedFile = null;
 
-	public CtcEditor(String... args) {
+	public CtcEditor(List<String> fileNames) {
 		this.setTitle("MHW CTC Editor");
 		this.setSize(1000, 620);
 		this.setResizable(true);
@@ -133,8 +133,11 @@ public class CtcEditor extends JFrame
 		splitTreeAndMain.setDividerLocation(DEFAULT_DEVIDIER_LOCATION_LEFT_RIGHT);
 		splitTopBottom.setDividerLocation(DEFAULT_DEVIDIER_LOCATION_TOP_BOTTOM);
 
-		if (args.length > 0) {
-			onFileOpened(new File(args[0]));
+		if (fileNames.size() > 1) {
+			LOG.warn("Currently it is only possible to open one file at a time, opening first file only");
+		}
+		if (!fileNames.isEmpty()) {
+			onFileOpened(new File(fileNames.get(0)));
 		}
 	}
 
