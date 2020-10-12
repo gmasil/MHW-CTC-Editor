@@ -360,31 +360,44 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuFindBoneFunctionID() {
-		String searchQuery = JOptionPane.showInputDialog(this, "", "Find Bone Function ID",
-				JOptionPane.QUESTION_MESSAGE);
-		try {
-			int boneFunctionId = Integer.parseInt(searchQuery);
-			if (!treeViewer.searchBoneFunctionId(boneFunctionId)) {
-				JOptionPane.showMessageDialog(this, "No bone with bone function id " + boneFunctionId + " found",
-						"Find Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+		if (treeViewer.getCtc() != null) {
+			String searchQuery = JOptionPane.showInputDialog(this, "Enter Bone Function ID:", "Find Bone Function ID",
+					JOptionPane.QUESTION_MESSAGE);
+			if (searchQuery != null && !searchQuery.isEmpty()) {
+				try {
+					int boneFunctionId = Integer.parseInt(searchQuery);
+					if (!treeViewer.searchBoneFunctionId(boneFunctionId)) {
+						JOptionPane.showMessageDialog(this,
+								"No bone with bone function id " + boneFunctionId + " found", "Find Bone Function ID",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				} catch (NumberFormatException e) {
+					JOptionPane.showMessageDialog(this, "You must enter a valid integer number",
+							"Find Bone Function ID", JOptionPane.ERROR_MESSAGE);
+				}
 			}
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "You must enter a valid integer number", "Find Bone Function ID",
+		} else {
+			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", "Duplicate Bone Function ID",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	@Override
 	public void menuFindDuplicateBoneFunctionIDs() {
-		List<CtcBone> duplicateBneFunctionIds = treeViewer.getCtc().findBonesWithDuplicateBoneFunctionIds();
-		if (duplicateBneFunctionIds.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "There are no duplicate bone funtion ids", "Duplicate Bone Function ID",
-					JOptionPane.INFORMATION_MESSAGE);
+		if (treeViewer.getCtc() != null) {
+			List<CtcBone> duplicateBneFunctionIds = treeViewer.getCtc().findBonesWithDuplicateBoneFunctionIds();
+			if (duplicateBneFunctionIds.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "There are no duplicate bone funtion ids",
+						"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				String s = String.join(", ", duplicateBneFunctionIds.stream().map(b -> "" + b.getBoneFunctionID())
+						.collect(Collectors.toList()));
+				JOptionPane.showMessageDialog(this, "The following bone function ids are not unique:\n" + s,
+						"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
-			String s = String.join(", ",
-					duplicateBneFunctionIds.stream().map(b -> "" + b.getBoneFunctionID()).collect(Collectors.toList()));
-			JOptionPane.showMessageDialog(this, "The following bone function ids are not unique:\n" + s,
-					"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", "Duplicate Bone Function ID",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
