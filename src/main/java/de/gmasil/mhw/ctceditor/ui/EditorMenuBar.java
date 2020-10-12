@@ -48,6 +48,11 @@ public class EditorMenuBar extends JMenuBar {
 		addCopyMenu(menuEdit, listener);
 		addPasteMenu(menuEdit, listener);
 		addDeleteMenu(menuEdit, listener);
+		// top menu find
+		JMenu menuFind = new JMenu("Find");
+		menuEdit.setMnemonic(KeyEvent.VK_F);
+		add(menuFind);
+		addFindBoneFunctionIdMenu(menuFind, listener);
 		// top menu view
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
@@ -133,6 +138,17 @@ public class EditorMenuBar extends JMenuBar {
 		menuDelete.addActionListener(event -> listener.menuDelete());
 		setIcon(menuDelete, "close");
 		menuEdit.add(menuDelete);
+	}
+
+	// Find
+
+	private void addFindBoneFunctionIdMenu(JMenu menuFind, MenuListener listener) {
+		JMenuItem menuFindBoneFunctionId = createJMenuItem("Bone Function ID");
+		menuFindBoneFunctionId.setMnemonic(KeyEvent.VK_B);
+		menuFindBoneFunctionId.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+		menuFindBoneFunctionId.addActionListener(event -> listener.menuFindBoneFunctionID());
+		setIcon(menuFindBoneFunctionId, "search");
+		menuFind.add(menuFindBoneFunctionId);
 	}
 
 	// View

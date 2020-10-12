@@ -49,6 +49,7 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 		super(rootNode);
 		this.rootNode = rootNode;
 		setSelectionModel(new VetoableTreeSelectionModel(allowSellectionCallback));
+		setExpandsSelectedPaths(true);
 		setupSelectionListener(selectionListener);
 		setupDragAndDrop(parent, fileListener);
 		refreshTree();
@@ -194,6 +195,44 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 				super.setSelectionPath(path);
 			}
 		}
+	}
+
+	public boolean searchBoneFunctionId(int id) {
+		for (CtcChain chain : getCtc().getChains()) {
+			for (CtcBone bone : chain.getBones()) {
+				if (bone.getBoneFunctionID() == id) {
+					setSelectionPaths(
+							new TreePath[] { getTreePathInChainsByCtcBone(bone), getTreePathInBonesByCtcBone(bone) });
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public TreePath getTreePathInChainsByCtcBone(CtcBone ctcBone) {
+		DefaultMutableTreeNode chains = (DefaultMutableTreeNode) rootNode.getChildAt(1);
+		for (int i = 0; i < chains.getChildCount(); i++) {
+			DefaultMutableTreeNode chain = (DefaultMutableTreeNode) chains.getChildAt(i);
+			for (int x = 0; x < chain.getChildCount(); x++) {
+				DefaultMutableTreeNode bone = (DefaultMutableTreeNode) chain.getChildAt(x);
+				if (bone.getUserObject() == ctcBone) {
+					return new TreePath(new Object[] { rootNode, chains, chain, bone });
+				}
+			}
+		}
+		return null;
+	}
+
+	public TreePath getTreePathInBonesByCtcBone(CtcBone ctcBone) {
+		DefaultMutableTreeNode bones = (DefaultMutableTreeNode) rootNode.getChildAt(2);
+		for (int i = 0; i < bones.getChildCount(); i++) {
+			DefaultMutableTreeNode bone = (DefaultMutableTreeNode) bones.getChildAt(i);
+			if (bone.getUserObject() == ctcBone) {
+				return new TreePath(new Object[] { rootNode, bones, bone });
+			}
+		}
+		return null;
 	}
 
 	@Override

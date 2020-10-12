@@ -358,6 +358,22 @@ public class CtcEditor extends JFrame
 	}
 
 	@Override
+	public void menuFindBoneFunctionID() {
+		String searchQuery = JOptionPane.showInputDialog(this, "", "Find Bone Function ID",
+				JOptionPane.QUESTION_MESSAGE);
+		try {
+			int boneFunctionId = Integer.parseInt(searchQuery);
+			if (!treeViewer.searchBoneFunctionId(boneFunctionId)) {
+				JOptionPane.showMessageDialog(this, "No bone with bone function id " + boneFunctionId + " found",
+						"Find Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+			}
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "You must enter a valid integer number", "Find Bone Function ID",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	@Override
 	public boolean menuToggleConsole() {
 		showConsole = !showConsole;
 		updateConsole();
