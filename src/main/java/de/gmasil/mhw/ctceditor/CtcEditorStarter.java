@@ -28,21 +28,23 @@ public class CtcEditorStarter {
 
 	public static void start(String... args) {
 		LOG.info("MHW CTC Editor is starting");
+		copyStarterFile();
+		if (isRunningFromIde()) {
+			LOG.debug("Running from IDE");
+		} else {
+			try {
+				readManifest();
+				LOG.info("Version {} (Revision: {})", version, revision);
+			} catch (IOException e) {
+				LOG.warn("Unable to read version from manifest");
+			}
+		}
 		AppParameters params = new AppParameters(args);
 		if (params.isBatchMode()) {
 			LOG.info("Running in batch mode, disabling ansi colors");
 		}
 		if (params.isColorMode()) {
 			LOG.info("Running in color mode, enforcing ansi colors");
-		}
-		copyStarterFile();
-		if (!isRunningFromIde) {
-			try {
-				readManifest();
-			} catch (IOException e) {
-				LOG.warn("Unable to read version from manifest");
-			}
-			LOG.info("Running version {}", version);
 		}
 		EventQueue.invokeLater(() -> {
 			try {
@@ -89,7 +91,6 @@ public class CtcEditorStarter {
 		try {
 			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {
-				LOG.debug("Running from IDE");
 				isRunningFromIde = true;
 				version = "DEV";
 			} else if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
