@@ -1,5 +1,6 @@
 package de.gmasil.mhw.ctceditor.ui.panel.generic;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -87,10 +89,13 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 						if (setArrayValue(field, textField.getText(), index)) {
 							hasCtcDataChanged = true;
 						}
+						setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
 					} catch (NumberFormatException nfe) {
 						handleNumberFormatException(field, textField.getText());
+						setTextFieldBorderColor(textField, Color.RED);
 					} catch (Exception e) {
 						LOG.error("Unexpected error while saving field {}", field.getName(), e);
+						setTextFieldBorderColor(textField, Color.RED);
 					}
 				}
 			} else {
@@ -101,10 +106,13 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 						if (setValue(field, textField.getText())) {
 							hasCtcDataChanged = true;
 						}
+						setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
 					} catch (NumberFormatException nfe) {
 						handleNumberFormatException(field, textField.getText());
+						setTextFieldBorderColor(textField, Color.RED);
 					} catch (Exception e) {
 						LOG.error("Unexpected error while saving field {}", field.getName(), e);
+						setTextFieldBorderColor(textField, Color.RED);
 					}
 				}
 			}
@@ -134,6 +142,7 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 			setTextFieldValue(textField, valueToSet);
 		}
 		dataChanged = false;
+		setAllTextFieldBorderColors(Color.LIGHT_GRAY);
 	}
 
 	protected void addInputField(Field field) {
@@ -177,11 +186,26 @@ public abstract class GenericCtcEditorPanel<T extends Serializable> extends Base
 		JTextField textField = new JTextField("");
 		textField.setEditable(!readonly);
 		setTextFieldValue(textField, value);
-		addChangeListener(textField, e -> dataChanged = true);
 		getMainPanel().add(textField, "w 120::");
 		getMainPanel().add(new JLabel(info));
 		mapInputToField.put(textField, name);
 		mapFieldToInput.put(name, textField);
+		setTextFieldBorderColor(textField, Color.LIGHT_GRAY);
+		addChangeListener(textField, e -> {
+			dataChanged = true;
+			setTextFieldBorderColor(textField, Color.BLUE);
+		});
+	}
+
+	private void setAllTextFieldBorderColors(Color color) {
+		for (JTextField textField : mapInputToField.keySet()) {
+			setTextFieldBorderColor(textField, color);
+		}
+	}
+
+	private void setTextFieldBorderColor(JTextField textField, Color color) {
+		textField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(color, 1),
+				BorderFactory.createEmptyBorder(3, 3, 3, 3)));
 	}
 
 	private void setTextFieldValue(JTextField textField, Object value) {
