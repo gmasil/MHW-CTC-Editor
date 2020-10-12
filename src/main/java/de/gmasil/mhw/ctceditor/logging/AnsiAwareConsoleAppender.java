@@ -23,7 +23,7 @@ public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 	public void start() {
 		if (autoAnsi) {
 			boolean setUseAnsi = CLibrary.isatty(CLibrary.STDOUT_FILENO) == 1;
-			if (useAnsi && WindowsSupport.getConsoleMode() != -1) {
+			if (setUseAnsi && WindowsSupport.getConsoleMode() != -1) {
 				setUseAnsi = false;
 			}
 			if (setUseAnsi != useAnsi) {
