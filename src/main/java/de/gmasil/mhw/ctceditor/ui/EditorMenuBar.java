@@ -180,7 +180,7 @@ public class EditorMenuBar extends JMenuBar {
 		menuAbout.setMnemonic(KeyEvent.VK_A);
 		menuAbout.addActionListener(event -> {
 			JOptionPane.showMessageDialog(EditorMenuBar.this,
-					"MHW CTC-Editor\nVersion: " + CtcEditorStarter.getVersion() + "\nRevision: "
+					"MHW CTC Editor\nVersion: " + CtcEditorStarter.getVersion() + "\nRevision: "
 							+ CtcEditorStarter.getRevision(),
 					"About", JOptionPane.YES_OPTION, UIManager.getIcon("OptionPane.informationIcon"));
 		});
