@@ -22,6 +22,7 @@
 		<!-- plugin versions -->
 		<assembly-plugin.version>3.3.0</assembly-plugin.version>
 		<copy-rename-plugin.version>1.0.1</copy-rename-plugin.version>
+		<git-commit-id-plugin.version>4.0.2</git-commit-id-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +71,10 @@
 								<manifest>
 									<mainClass>${starter.class}</mainClass>
 								</manifest>
+								<manifestEntries>
+									<Version>${project.version}</Version>
+									<SCM-Revision>${git.commit.id.describe-short}</SCM-Revision>
+								</manifestEntries>
 							</archive>
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -123,6 +128,24 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- make git revision available -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>${git-commit-id-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

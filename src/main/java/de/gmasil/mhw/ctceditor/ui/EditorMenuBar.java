@@ -13,11 +13,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.gmasil.mhw.ctceditor.CtcEditorStarter;
 import de.gmasil.mhw.ctceditor.ui.api.MenuListener;
 
 public class EditorMenuBar extends JMenuBar {
@@ -51,6 +54,11 @@ public class EditorMenuBar extends JMenuBar {
 		add(menuView);
 		addShowConsoleMenu(menuView, listener);
 		addShowUnknownFieldsMenu(menuView, listener);
+		// top menu about
+		JMenu menuAbout = new JMenu("Help");
+		menuAbout.setMnemonic(KeyEvent.VK_H);
+		add(menuAbout);
+		addAboutMenu(menuAbout);
 	}
 
 	// File
@@ -163,6 +171,20 @@ public class EditorMenuBar extends JMenuBar {
 			setIcon(menuUnknownFields, CHECK_BOX_BLANK);
 		}
 		menuView.add(menuUnknownFields);
+	}
+
+	// help
+
+	private void addAboutMenu(JMenu menuHelp) {
+		JMenuItem menuAbout = createJMenuItem("About");
+		menuAbout.setMnemonic(KeyEvent.VK_A);
+		menuAbout.addActionListener(event -> {
+			JOptionPane.showMessageDialog(EditorMenuBar.this,
+					"MHW CTC-Editor\nVersion: " + CtcEditorStarter.getVersion() + "\nRevision: "
+							+ CtcEditorStarter.getRevision(),
+					"About", JOptionPane.YES_OPTION, UIManager.getIcon("OptionPane.informationIcon"));
+		});
+		menuHelp.add(menuAbout);
 	}
 
 	// helpers
