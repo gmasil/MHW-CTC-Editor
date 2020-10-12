@@ -53,6 +53,9 @@ import de.gmasil.mhw.ctceditor.ui.panel.generic.BaseCtcEditorPanel;
 
 public class CtcEditor extends JFrame
 		implements FileOpenedListener, MenuListener, SelectionListener, AllowSelectionCallback, RepaintTreeCallback {
+	private static final String TITLE_UNSUPPORTED_OPERATION = "Unsupported Operation";
+	private static final String TITLE_FIND_BONE_FUNCTION_ID = "Find Bone Function ID";
+	private static final String TITLE_DUPLICATE_BONE_FUNCTION_ID = "Duplicate Bone Function ID";
 	private static final String SELECT_TYPE_INFO = "Please do not select items of different types";
 	private static final String SELECT_INFO = "Select one or multiple objects on the left";
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -255,7 +258,7 @@ public class CtcEditor extends JFrame
 		// TODO: cleanup
 		if (treeViewer.getSelectionCount() == 0) {
 			JOptionPane.showMessageDialog(this, "You have to select an object in the CTC tree view",
-					"Unsupported Operation", JOptionPane.OK_OPTION);
+					TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 		} else if (treeViewer.getSelectionCount() == 1) {
 			Object lastPathComponent = ((DefaultMutableTreeNode) treeViewer.getSelectionPath().getLastPathComponent())
 					.getUserObject();
@@ -264,8 +267,8 @@ public class CtcEditor extends JFrame
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			clipboard.setContents(selection, selection);
 		} else {
-			JOptionPane.showMessageDialog(this, "It is not possible to copy multiple objects", "Unsupported Operation",
-					JOptionPane.OK_OPTION);
+			JOptionPane.showMessageDialog(this, "It is not possible to copy multiple objects",
+					TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 		}
 	}
 
@@ -305,27 +308,27 @@ public class CtcEditor extends JFrame
 									LOG.error("Error while finding the position to paste CTC chain");
 									JOptionPane.showMessageDialog(this,
 											"Error while finding the position to paste CTC chain",
-											"Unsupported Operation", JOptionPane.OK_OPTION);
+											TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 								}
 							} else {
 								LOG.warn("It is only possible to paste a CTC chain when another CTC chain is selected");
 								JOptionPane.showMessageDialog(this,
 										"It is only possible to paste a CTC chain when another CTC chain is selected",
-										"Unsupported Operation", JOptionPane.OK_OPTION);
+										TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 							}
 						} else {
 							JOptionPane.showMessageDialog(this,
 									"It is only possible to paste when exactly one object is selected",
-									"Unsupported Operation", JOptionPane.OK_OPTION);
+									TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 						}
 					} else {
 						LOG.warn("Currently it is only possible to paste CTC chains");
 						JOptionPane.showMessageDialog(this, "Currently it is only possible to paste CTC chains",
-								"Unsupported Operation", JOptionPane.OK_OPTION);
+								TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 					}
 				} else {
 					LOG.warn("Pasted data is not a CTC object");
-					JOptionPane.showMessageDialog(this, "Pasted data is not a CTC object", "Unsupported Operation",
+					JOptionPane.showMessageDialog(this, "Pasted data is not a CTC object", TITLE_UNSUPPORTED_OPERATION,
 							JOptionPane.OK_OPTION);
 				}
 			}
@@ -338,7 +341,7 @@ public class CtcEditor extends JFrame
 	public void menuDelete() {
 		if (treeViewer.getSelectionCount() == 0) {
 			JOptionPane.showMessageDialog(this, "You have to select an object in the CTC tree view",
-					"Unsupported Operation", JOptionPane.OK_OPTION);
+					TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 		} else if (treeViewer.getSelectionCount() == 1) {
 			Object lastPathComponent = ((DefaultMutableTreeNode) treeViewer.getSelectionPath().getLastPathComponent())
 					.getUserObject();
@@ -350,34 +353,34 @@ public class CtcEditor extends JFrame
 				treeViewer.setCtcChanged(true);
 			} else {
 				JOptionPane.showMessageDialog(this, "Currently it is only possible to delete CTC chains",
-						"Unsupported Operation", JOptionPane.OK_OPTION);
+						TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 			}
 		} else {
 			JOptionPane.showMessageDialog(this, "It is not possible to delete multiple objects",
-					"Unsupported Operation", JOptionPane.OK_OPTION);
+					TITLE_UNSUPPORTED_OPERATION, JOptionPane.OK_OPTION);
 		}
 	}
 
 	@Override
 	public void menuFindBoneFunctionID() {
 		if (treeViewer.getCtc() != null) {
-			String searchQuery = JOptionPane.showInputDialog(this, "Enter Bone Function ID:", "Find Bone Function ID",
-					JOptionPane.QUESTION_MESSAGE);
+			String searchQuery = JOptionPane.showInputDialog(this, "Enter Bone Function ID:",
+					TITLE_FIND_BONE_FUNCTION_ID, JOptionPane.QUESTION_MESSAGE);
 			if (searchQuery != null && !searchQuery.isEmpty()) {
 				try {
 					int boneFunctionId = Integer.parseInt(searchQuery);
 					if (!treeViewer.searchBoneFunctionId(boneFunctionId)) {
 						JOptionPane.showMessageDialog(this,
-								"No bone with bone function id " + boneFunctionId + " found", "Find Bone Function ID",
-								JOptionPane.INFORMATION_MESSAGE);
+								"No bone with bone function id " + boneFunctionId + " found",
+								TITLE_FIND_BONE_FUNCTION_ID, JOptionPane.INFORMATION_MESSAGE);
 					}
 				} catch (NumberFormatException e) {
 					JOptionPane.showMessageDialog(this, "You must enter a valid integer number",
-							"Find Bone Function ID", JOptionPane.ERROR_MESSAGE);
+							TITLE_FIND_BONE_FUNCTION_ID, JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		} else {
-			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", "Duplicate Bone Function ID",
+			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", TITLE_FIND_BONE_FUNCTION_ID,
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -388,15 +391,15 @@ public class CtcEditor extends JFrame
 			List<CtcBone> duplicateBneFunctionIds = treeViewer.getCtc().findBonesWithDuplicateBoneFunctionIds();
 			if (duplicateBneFunctionIds.isEmpty()) {
 				JOptionPane.showMessageDialog(this, "There are no duplicate bone funtion ids",
-						"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+						TITLE_DUPLICATE_BONE_FUNCTION_ID, JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				String s = String.join(", ", duplicateBneFunctionIds.stream().map(b -> "" + b.getBoneFunctionID())
 						.collect(Collectors.toList()));
 				JOptionPane.showMessageDialog(this, "The following bone function ids are not unique:\n" + s,
-						"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
+						TITLE_DUPLICATE_BONE_FUNCTION_ID, JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
-			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", "Duplicate Bone Function ID",
+			JOptionPane.showMessageDialog(this, "You have to open a CTC file first", TITLE_DUPLICATE_BONE_FUNCTION_ID,
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
