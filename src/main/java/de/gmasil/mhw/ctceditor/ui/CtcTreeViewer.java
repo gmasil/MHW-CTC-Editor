@@ -38,6 +38,7 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 	private DefaultMutableTreeNode rootNode;
 	private Ctc ctc = null;
 	private boolean isCtcChanged = false;
+	private AllowSelectionCallback allowSellectionCallback;
 
 	public CtcTreeViewer(Component parent, FileOpenedListener fileListener, SelectionListener selectionListener,
 			AllowSelectionCallback allowSellectionCallback) {
@@ -49,6 +50,7 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 			AllowSelectionCallback allowSellectionCallback, DefaultMutableTreeNode rootNode) {
 		super(rootNode);
 		this.rootNode = rootNode;
+		this.allowSellectionCallback = allowSellectionCallback;
 		setSelectionModel(new VetoableTreeSelectionModel(allowSellectionCallback));
 		setExpandsSelectedPaths(true);
 		setupSelectionListener(selectionListener);
@@ -208,7 +210,9 @@ public class CtcTreeViewer extends JTree implements CtcChangedCallback {
 				}
 			}
 		}
-		setSelectionPaths(treePaths.toArray(new TreePath[0]));
+		if (!treePaths.isEmpty() && allowSellectionCallback.allowSelectionChange()) {
+			setSelectionPaths(treePaths.toArray(new TreePath[0]));
+		}
 		return !treePaths.isEmpty();
 	}
 

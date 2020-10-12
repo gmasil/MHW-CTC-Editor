@@ -3,8 +3,10 @@ package de.gmasil.mhw.ctceditor.ctc;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Ctc implements Serializable {
@@ -59,6 +61,19 @@ public class Ctc implements Serializable {
 			}
 		}
 		return dataChanged;
+	}
+
+	public List<CtcBone> findBonesWithDuplicateBoneFunctionIds() {
+		List<CtcBone> list = new LinkedList<>();
+		Set<Integer> boneFunctionIds = new HashSet<>();
+		for (CtcBone bone : getBones()) {
+			if (boneFunctionIds.contains(bone.getBoneFunctionID())) {
+				list.add(bone);
+			} else {
+				boneFunctionIds.add(bone.getBoneFunctionID());
+			}
+		}
+		return list;
 	}
 
 	public byte[] getBytes() {

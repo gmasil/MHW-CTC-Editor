@@ -19,6 +19,8 @@ public interface MenuListener {
 
 	public void menuFindBoneFunctionID();
 
+	public void menuFindDuplicateBoneFunctionIDs();
+
 	public boolean menuToggleConsole();
 
 	public boolean menuToggleUnknownFields();

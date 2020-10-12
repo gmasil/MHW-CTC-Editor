@@ -53,6 +53,7 @@ public class EditorMenuBar extends JMenuBar {
 		menuEdit.setMnemonic(KeyEvent.VK_F);
 		add(menuFind);
 		addFindBoneFunctionIdMenu(menuFind, listener);
+		addFindDuplucateBoneFunctionIdsMenu(menuFind, listener);
 		// top menu view
 		JMenu menuView = new JMenu("View");
 		menuView.setMnemonic(KeyEvent.VK_V);
@@ -151,6 +152,15 @@ public class EditorMenuBar extends JMenuBar {
 		menuFind.add(menuFindBoneFunctionId);
 	}
 
+	private void addFindDuplucateBoneFunctionIdsMenu(JMenu menuFind, MenuListener listener) {
+		JMenuItem menuFindDuplicateBoneFunctionIds = createJMenuItem("Duplicate Bone Function IDs");
+		menuFindDuplicateBoneFunctionIds.setMnemonic(KeyEvent.VK_D);
+		menuFindDuplicateBoneFunctionIds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		menuFindDuplicateBoneFunctionIds.addActionListener(event -> listener.menuFindDuplicateBoneFunctionIDs());
+		setIcon(menuFindDuplicateBoneFunctionIds, "search-file");
+		menuFind.add(menuFindDuplicateBoneFunctionIds);
+	}
+
 	// View
 
 	private void addShowConsoleMenu(JMenu menuView, MenuListener listener) {
@@ -200,6 +210,7 @@ public class EditorMenuBar extends JMenuBar {
 							+ CtcEditorStarter.getRevision(),
 					"About", JOptionPane.YES_OPTION, UIManager.getIcon("OptionPane.informationIcon"));
 		});
+		setIcon(menuAbout, "help");
 		menuHelp.add(menuAbout);
 	}
 

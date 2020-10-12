@@ -17,6 +17,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -370,6 +371,20 @@ public class CtcEditor extends JFrame
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(this, "You must enter a valid integer number", "Find Bone Function ID",
 					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	@Override
+	public void menuFindDuplicateBoneFunctionIDs() {
+		List<CtcBone> duplicateBneFunctionIds = treeViewer.getCtc().findBonesWithDuplicateBoneFunctionIds();
+		if (duplicateBneFunctionIds.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "There are no duplicate bone funtion ids", "Duplicate Bone Function ID",
+					JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			String s = String.join(", ",
+					duplicateBneFunctionIds.stream().map(b -> "" + b.getBoneFunctionID()).collect(Collectors.toList()));
+			JOptionPane.showMessageDialog(this, "The following bone function ids are not unique:\n" + s,
+					"Duplicate Bone Function ID", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
