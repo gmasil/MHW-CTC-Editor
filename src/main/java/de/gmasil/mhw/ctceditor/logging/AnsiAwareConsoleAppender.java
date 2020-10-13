@@ -1,7 +1,7 @@
 package de.gmasil.mhw.ctceditor.logging;
 
+import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.internal.CLibrary;
-import org.fusesource.jansi.internal.WindowsSupport;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
@@ -21,11 +21,9 @@ public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 
 	@Override
 	public void start() {
+		AnsiConsole.systemInstall();
 		if (autoAnsi) {
 			boolean setUseAnsi = CLibrary.isatty(CLibrary.STDOUT_FILENO) == 1;
-			if (setUseAnsi && WindowsSupport.getConsoleMode() != -1) {
-				setUseAnsi = false;
-			}
 			if (setUseAnsi != useAnsi) {
 				setUseAnsi(setUseAnsi);
 			}
