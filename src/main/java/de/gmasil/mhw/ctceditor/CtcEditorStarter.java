@@ -19,7 +19,6 @@ import de.gmasil.mhw.ctceditor.ui.CtcEditor;
 
 public class CtcEditorStarter {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-	private static boolean isRunningFromIde = false;
 	private static String version = "Dev";
 	private static String revision = "0";
 
@@ -28,8 +27,7 @@ public class CtcEditorStarter {
 
 	public static void start(String... args) {
 		LOG.info("MHW CTC Editor is starting");
-		copyStarterFile();
-		if (isRunningFromIde()) {
+		if (CtcEditorStarterWrapper.isRunningFromIde()) {
 			LOG.debug("Running from IDE");
 		} else {
 			try {
@@ -46,6 +44,7 @@ public class CtcEditorStarter {
 		if (params.isColorMode()) {
 			LOG.info("Running in color mode, enforcing ansi colors");
 		}
+		copyStarterFile();
 		EventQueue.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -54,10 +53,6 @@ public class CtcEditorStarter {
 			}
 			new CtcEditor(params.getFileNames());
 		});
-	}
-
-	public static boolean isRunningFromIde() {
-		return isRunningFromIde;
 	}
 
 	public static String getVersion() {
@@ -90,10 +85,7 @@ public class CtcEditorStarter {
 	private static void copyStarterFile() {
 		try {
 			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-			if (sourceLocation.getAbsolutePath().replace('\\', '/').endsWith("target/classes")) {
-				isRunningFromIde = true;
-				version = "DEV";
-			} else if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
+			if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
 				File starterFile = new File(sourceLocation.getParentFile(), "MHW-CTC-Editor.cmd");
 				if (!starterFile.exists()) {
 					URL url = MethodHandles.lookup().lookupClass().getResource("/MHW-CTC-Editor.cmd");

@@ -9,6 +9,7 @@ import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
 public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 	private static boolean useAnsi = false;
 	private static boolean autoAnsi = true;
+	private static boolean installAnsiConsole = true;
 	private PatternLayoutEncoderBase<E> encoder;
 
 	public PatternLayoutEncoderBase<E> getEncoder() {
@@ -21,7 +22,9 @@ public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 
 	@Override
 	public void start() {
-		AnsiConsole.systemInstall();
+		if (installAnsiConsole) {
+			AnsiConsole.systemInstall();
+		}
 		if (autoAnsi) {
 			boolean setUseAnsi = CLibrary.isatty(CLibrary.STDOUT_FILENO) == 1;
 			if (setUseAnsi != useAnsi) {
@@ -46,5 +49,9 @@ public class AnsiAwareConsoleAppender<E> extends AppenderBase<E> {
 
 	public static synchronized void setAutoAnsi(boolean autoAnsi) {
 		AnsiAwareConsoleAppender.autoAnsi = autoAnsi;
+	}
+
+	public static synchronized void setInstallAnsiConsole(boolean installAnsiConsole) {
+		AnsiAwareConsoleAppender.installAnsiConsole = installAnsiConsole;
 	}
 }
