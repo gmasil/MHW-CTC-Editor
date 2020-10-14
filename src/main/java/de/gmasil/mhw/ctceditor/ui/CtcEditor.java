@@ -77,7 +77,7 @@ public class CtcEditor extends JFrame
 
 	public CtcEditor(List<String> fileNames) {
 		this.setTitle("MHW CTC Editor");
-		this.setSize(1000, 620);
+		this.setSize(1200, 760);
 		this.setResizable(true);
 		this.setLocationByPlatform(true);
 		this.setMinimumSize(new Dimension(300, 200));
