@@ -40,6 +40,7 @@ public class BaseCtcEditorPanel extends JPanel implements DataChangedCallback {
 		scrollMainPanel.setMinimumSize(new Dimension(50, 50));
 		scrollMainPanel.setPreferredSize(new Dimension(500, 500));
 		scrollMainPanel.getVerticalScrollBar().setUnitIncrement(6);
+		scrollMainPanel.getHorizontalScrollBar().setUnitIncrement(6);
 		add(scrollMainPanel, BorderLayout.CENTER);
 		if (title != null) {
 			setTitle(title);
