@@ -117,7 +117,7 @@ public class CtcEditor extends JFrame
 		splitTreeAndMain.setBorder(BorderFactory.createEmptyBorder());
 		splitTreeAndMain.setMinimumSize(new Dimension(0, 50));
 		splitTreeAndMain.setPreferredSize(new Dimension(500, 500));
-		splitTreeAndMain.setResizeWeight(0.0f);
+		splitTreeAndMain.setResizeWeight(0.5f);
 		splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitTreeAndMain, scrollConsole);
 		splitTopBottom.setDividerSize(DIVIDER_SIZE);
 		splitTopBottom.setBorder(BorderFactory.createEmptyBorder());
@@ -231,7 +231,7 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void menuClose() {
-		setMainText(SELECT_INFO);
+		setMainText("");
 		treeViewer.setCtc(null);
 		treeViewer.setCtcChanged(false);
 		currentlyOpenedFile = null;
@@ -452,12 +452,16 @@ public class CtcEditor extends JFrame
 
 	@Override
 	public void onTopicSelected() {
-		setMainText(SELECT_INFO);
+		setMainText("");
 	}
 
 	@Override
 	public void onIllegalSelection() {
-		setMainText(SELECT_TYPE_INFO);
+		if (treeViewer.getCtc() == null) {
+			setMainText("");
+		} else {
+			setMainText(SELECT_TYPE_INFO);
+		}
 	}
 
 	// AllowSellectionCallback
