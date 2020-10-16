@@ -23,6 +23,8 @@
 		<assembly-plugin.version>3.3.0</assembly-plugin.version>
 		<copy-rename-plugin.version>1.0.1</copy-rename-plugin.version>
 		<git-commit-id-plugin.version>4.0.2</git-commit-id-plugin.version>
+		<resources-plugin.version>3.2.0</resources-plugin.version>
+		<launch4j-plugin.version>1.7.25</launch4j-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -120,8 +122,9 @@
 			</plugin>
 			<!-- copy JRE -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
@@ -144,7 +147,7 @@
 			<plugin>
 				<groupId>com.akathist.maven.plugins.launch4j</groupId>
 				<artifactId>launch4j-maven-plugin</artifactId>
-				<version>1.7.25</version>
+				<version>${launch4j-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>l4j-gui</id>
@@ -162,7 +165,7 @@
 							</classPath>
 							<jre>
 								<path>%JAVA_HOME%</path>
-								<!-- <minVersion>11</minVersion> -->
+								<minVersion>11</minVersion>
 							</jre>
 							<splash>
 								<file>${basedir}/src/main/resources/img/splash.bmp</file>
@@ -198,52 +201,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<!-- lifecycle mappings for eclipse -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-jar-plugin</artifactId>
-										<versionRange>[0.0,)</versionRange>
-										<goals>
-											<goal>jar</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute>
-											<runOnIncremental>true</runOnIncremental>
-										</execute>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-assembly-plugin</artifactId>
-										<versionRange>[0.0,)</versionRange>
-										<goals>
-											<goal>single</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute>
-											<runOnIncremental>true</runOnIncremental>
-										</execute>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<distributionManagement>
