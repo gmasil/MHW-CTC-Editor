@@ -94,6 +94,38 @@
 
 	<build>
 		<plugins>
+			<!-- create splash image -->
+			<plugin>
+				<groupId>de.gmasil.maven</groupId>
+				<artifactId>image-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<background>${basedir}/data/splash-bg.png</background>
+					<target>${basedir}/target/splash.bmp</target>
+					<title>
+						<text>${project.name}</text>
+						<x>80</x>
+						<y>70</y>
+						<size>25</size>
+						<font>Ebrima</font>
+					</title>
+					<subtitle>
+						<text>Version: ${project.version}\nRevision: ${git.commit.id.describe-short}</text>
+						<x>10</x>
+						<y>170</y>
+						<size>13</size>
+						<font>Ebrima</font>
+					</subtitle>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>image</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- build fat jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -188,7 +220,7 @@
 							</jre>
 							<icon>${basedir}/src/main/resources/img/app-icon.ico</icon>
 							<splash>
-								<file>${basedir}/src/main/resources/img/splash.bmp</file>
+								<file>${basedir}/target/splash.bmp</file>
 								<waitForWindow>true</waitForWindow>
 								<timeout>60</timeout>
 							</splash>
@@ -226,7 +258,7 @@
 							</jre>
 							<icon>${basedir}/src/main/resources/img/app-icon.ico</icon>
 							<splash>
-								<file>${basedir}/src/main/resources/img/splash.bmp</file>
+								<file>${basedir}/target/splash.bmp</file>
 								<waitForWindow>true</waitForWindow>
 								<timeout>60</timeout>
 							</splash>
@@ -304,6 +336,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>GMasil Nexus</id>
+			<url>https://nexus.gmasil.de/repository/maven-releases/</url>
+		</repository>
+	</repositories>
 
 	<distributionManagement>
 		<repository>
