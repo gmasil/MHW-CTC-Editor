@@ -55,6 +55,24 @@
 
 	<build>
 		<plugins>
+			<!-- make git revision available -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>${git-commit-id-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+				</configuration>
+			</plugin>
 			<!-- build fat jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -85,7 +103,7 @@
 					</execution>
 					<execution>
 						<id>make-zip</id>
-						<phase>package</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
@@ -100,53 +118,84 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- copy files to release folder -->
+			<!-- copy JRE -->
 			<plugin>
-				<groupId>com.coderplus.maven.plugins</groupId>
-				<artifactId>copy-rename-maven-plugin</artifactId>
-				<version>${copy-rename-plugin.version}</version>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
-						<id>copy-fat-jar</id>
-						<phase>package</phase>
+						<id>copy-resources</id>
+						<phase>prepare-package</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<sourceFile>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</sourceFile>
-							<destinationFile>target/release/${project.name}.jar</destinationFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-starter-script</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<sourceFile>${basedir}/src/main/resources/MHW-CTC-Editor.cmd</sourceFile>
-							<destinationFile>${basedir}/target/release/MHW-CTC-Editor.cmd</destinationFile>
+							<outputDirectory>${basedir}/target/java</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${java.home}</directory>
+								</resource>
+							</resources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- make git revision available -->
+			<!-- exe -->
 			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>${git-commit-id-plugin.version}</version>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.7.25</version>
 				<executions>
 					<execution>
-						<id>get-the-git-infos</id>
+						<id>l4j-gui</id>
+						<phase>package</phase>
 						<goals>
-							<goal>revision</goal>
+							<goal>launch4j</goal>
 						</goals>
-						<phase>validate</phase>
+						<configuration>
+							<headerType>gui</headerType>
+							<outfile>target/MHW-CTC-Editor.exe</outfile>
+							<jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+							<errTitle>${project.name}</errTitle>
+							<classPath>
+								<mainClass>${starter.class}</mainClass>
+							</classPath>
+							<jre>
+								<path>%JAVA_HOME%</path>
+								<!-- <minVersion>11</minVersion> -->
+							</jre>
+							<splash>
+								<file>${basedir}/src/main/resources/img/splash.bmp</file>
+								<waitForWindow>true</waitForWindow>
+								<timeout>60</timeout>
+							</splash>
+						</configuration>
+					</execution>
+					<execution>
+						<id>l4j-gui-bundled</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<outfile>target/MHW-CTC-Editor-bundled.exe</outfile>
+							<jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+							<errTitle>${project.name}</errTitle>
+							<classPath>
+								<mainClass>${starter.class}</mainClass>
+							</classPath>
+							<jre>
+								<path>./java</path>
+							</jre>
+							<splash>
+								<file>${basedir}/src/main/resources/img/splash.bmp</file>
+								<waitForWindow>true</waitForWindow>
+								<timeout>60</timeout>
+							</splash>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-				</configuration>
 			</plugin>
 		</plugins>
 		<!-- lifecycle mappings for eclipse -->

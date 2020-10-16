@@ -1,7 +1,6 @@
 package de.gmasil.mhw.ctceditor;
 
 import java.awt.EventQueue;
-import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
@@ -10,7 +9,6 @@ import java.util.jar.Manifest;
 
 import javax.swing.UIManager;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +42,6 @@ public class CtcEditorStarter {
 		if (params.isColorMode()) {
 			LOG.info("Running in color mode, enforcing ansi colors");
 		}
-		copyStarterFile();
 		EventQueue.invokeLater(() -> {
 			try {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -79,21 +76,6 @@ public class CtcEditorStarter {
 			} catch (IOException e) {
 				// Nothing to do
 			}
-		}
-	}
-
-	private static void copyStarterFile() {
-		try {
-			File sourceLocation = new File(CtcEditor.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-			if (sourceLocation.getAbsolutePath().endsWith(".jar")) {
-				File starterFile = new File(sourceLocation.getParentFile(), "MHW-CTC-Editor.cmd");
-				if (!starterFile.exists()) {
-					URL url = MethodHandles.lookup().lookupClass().getResource("/MHW-CTC-Editor.cmd");
-					FileUtils.copyURLToFile(url, starterFile);
-				}
-			}
-		} catch (Exception e) {
-			LOG.warn("Could not copy starter file", e);
 		}
 	}
 }

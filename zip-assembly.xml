@@ -7,13 +7,15 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<files>
 		<file>
-			<source>${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar</source>
+			<source>target/MHW-CTC-Editor-bundled.exe</source>
 			<outputDirectory>/</outputDirectory>
-			<destName>MHW-CTC-Editor.jar</destName>
-		</file>
-		<file>
-			<source>${project.basedir}/src/main/resources/MHW-CTC-Editor.cmd</source>
-			<outputDirectory>/</outputDirectory>
+			<destName>MHW-CTC-Editor.exe</destName>
 		</file>
 	</files>
+	<fileSets>
+		<fileSet>
+			<directory>target/java</directory>
+			<outputDirectory>/java</outputDirectory>
+		</fileSet>
+	</fileSets>
 </assembly>
