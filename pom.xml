@@ -1,3 +1,22 @@
+<!--
+	MHW-CTC-Editor
+	Copyright © 2020 Simon Oelerich (simon.oelerich@gmasil.de)
+
+	This file is part of MHW-CTC-Editor.
+
+	MHW-CTC-Editor is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	MHW-CTC-Editor is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with MHW-CTC-Editor. If not, see <https://www.gnu.org/licenses/>.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -7,12 +26,29 @@
 	<name>MHW-CTC-Editor</name>
 	<description>Editor for CTC files from Monster Hunter World to manipulate physical effects</description>
 
+	<inceptionYear>2020</inceptionYear>
+	<url>https://bitbucket.gmasil.de/projects/MHW/repos/ctc-editor/browse</url>
+
+	<organization>
+		<name>Gmasil</name>
+		<url>https://gmasil.de</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3 (GPLv3)</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+		</license>
+	</licenses>
+
 	<properties>
-		<starter.class>de.gmasil.mhw.ctceditor.CtcEditorStarterWrapper</starter.class>
 		<java.version>11</java.version>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- properties -->
+		<starter.class>de.gmasil.mhw.ctceditor.CtcEditorStarterWrapper</starter.class>
+		<product.version>1.0.0.0</product.version>
 		<!-- versions -->
 		<javafx.version>11</javafx.version>
 		<logback.version>1.2.3</logback.version>
@@ -25,6 +61,7 @@
 		<git-commit-id-plugin.version>4.0.2</git-commit-id-plugin.version>
 		<resources-plugin.version>3.2.0</resources-plugin.version>
 		<launch4j-plugin.version>1.7.25</launch4j-plugin.version>
+		<license-plugin.version>3.0</license-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -57,24 +94,6 @@
 
 	<build>
 		<plugins>
-			<!-- make git revision available -->
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>${git-commit-id-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>get-the-git-infos</id>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-						<phase>validate</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-				</configuration>
-			</plugin>
 			<!-- build fat jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -157,7 +176,7 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<outfile>target/MHW-CTC-Editor.exe</outfile>
+							<outfile>target/${project.name}.exe</outfile>
 							<jar>target/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
 							<errTitle>${project.name}</errTitle>
 							<classPath>
@@ -167,11 +186,25 @@
 								<path>%JAVA_HOME%</path>
 								<minVersion>11</minVersion>
 							</jre>
+							<icon>${basedir}/src/main/resources/img/app-icon.ico</icon>
 							<splash>
 								<file>${basedir}/src/main/resources/img/splash.bmp</file>
 								<waitForWindow>true</waitForWindow>
 								<timeout>60</timeout>
 							</splash>
+							<versionInfo>
+								<fileVersion>${product.version}</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>${project.description}</fileDescription>
+								<copyright>${project.organization.name}</copyright>
+								<companyName>${project.organization.name}</companyName>
+								<productVersion>${product.version}</productVersion>
+								<internalName>${project.name}</internalName>
+								<originalFilename>${project.name}.exe</originalFilename>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>${project.name}</productName>
+								<language>ENGLISH_US</language>
+							</versionInfo>
 						</configuration>
 					</execution>
 					<execution>
@@ -191,14 +224,83 @@
 							<jre>
 								<path>./java</path>
 							</jre>
+							<icon>${basedir}/src/main/resources/img/app-icon.ico</icon>
 							<splash>
 								<file>${basedir}/src/main/resources/img/splash.bmp</file>
 								<waitForWindow>true</waitForWindow>
 								<timeout>60</timeout>
 							</splash>
+							<versionInfo>
+								<fileVersion>${product.version}</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>${project.description}</fileDescription>
+								<copyright>Rissis</copyright>
+								<productVersion>${product.version}</productVersion>
+								<internalName>${project.name}</internalName>
+								<originalFilename>${project.name}.exe</originalFilename>
+								<txtProductVersion>${project.version}</txtProductVersion>
+								<productName>${project.name}</productName>
+								<language>ENGLISH_US</language>
+							</versionInfo>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<!-- license -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>${license-plugin.version}</version>
+				<configuration>
+					<header>${project.basedir}/license/templates/gnu_gpl_v3.txt</header>
+					<properties>
+						<owner>Simon Oelerich</owner>
+						<email>simon.oelerich@gmasil.de</email>
+					</properties>
+					<includes>
+						<include>src/main/java/**</include>
+						<include>src/main/resources/**</include>
+						<include>src/test/java/**</include>
+						<include>src/test/resources/**</include>
+						<include>pom.xml</include>
+					</includes>
+					<excludes>
+						<exclude>**/LICENSE.txt</exclude>
+						<exclude>**/*.psd</exclude>
+					</excludes>
+					<headerDefinitions>
+						<headerDefinition>${project.basedir}/license/templates/xmlstyle.xml</headerDefinition>
+					</headerDefinitions>
+					<mapping>
+						<xml>XML_TAB_STYLE</xml>
+					</mapping>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- make git revision available -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>${git-commit-id-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<phase>validate</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
