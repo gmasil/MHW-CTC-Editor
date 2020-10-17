@@ -165,7 +165,7 @@ public class CtcEditor extends JFrame
 	}
 
 	private void setApplicationIcons() {
-		String[] fileNames = new String[] { "/img/app-icon-20.png", "/img/app-icon-40.png" };
+		String[] fileNames = new String[] { "/img/app-icon-16.png", "/img/app-icon-40.png" };
 		List<Image> images = new LinkedList<>();
 		for (String fileName : fileNames) {
 			try {
