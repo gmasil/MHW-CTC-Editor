@@ -56,6 +56,7 @@
 		<jansi.version>1.18</jansi.version>
 		<miglayout.version>5.2</miglayout.version>
 		<!-- plugin versions -->
+		<image-plugin.version>1.0.1</image-plugin.version>
 		<assembly-plugin.version>3.3.0</assembly-plugin.version>
 		<copy-rename-plugin.version>1.0.1</copy-rename-plugin.version>
 		<git-commit-id-plugin.version>4.0.2</git-commit-id-plugin.version>
@@ -98,7 +99,7 @@
 			<plugin>
 				<groupId>de.gmasil.maven</groupId>
 				<artifactId>image-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>${image-plugin.version}</version>
 				<configuration>
 					<background>${basedir}/data/splash-bg.png</background>
 					<target>${basedir}/target/splash.bmp</target>
@@ -108,6 +109,7 @@
 						<y>70</y>
 						<size>25</size>
 						<font>Ebrima</font>
+						<color>#ffffff</color>
 					</title>
 					<subtitle>
 						<text>Version: ${project.version}\nRevision: ${git.commit.id.describe-short}</text>
@@ -115,6 +117,7 @@
 						<y>170</y>
 						<size>13</size>
 						<font>Ebrima</font>
+						<color>#e3e3e3</color>
 					</subtitle>
 				</configuration>
 				<executions>
