@@ -1,5 +1,5 @@
 ${project.name}
-Copyright © ${project.inceptionYear} ${owner} (${email})
+Copyright © ${project.inceptionYear} ${owner}
  
 This file is part of ${project.name}.
  

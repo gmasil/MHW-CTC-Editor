@@ -1,6 +1,6 @@
 <!--
 	MHW-CTC-Editor
-	Copyright © 2020 Simon Oelerich (simon.oelerich@gmasil.de)
+	Copyright © 2020 gmasil.de
 
 	This file is part of MHW-CTC-Editor.
 
@@ -289,8 +289,7 @@
 				<configuration>
 					<header>${project.basedir}/license/templates/gnu_gpl_v3.txt</header>
 					<properties>
-						<owner>Simon Oelerich</owner>
-						<email>simon.oelerich@gmasil.de</email>
+						<owner>gmasil.de</owner>
 					</properties>
 					<includes>
 						<include>src/main/java/**</include>
