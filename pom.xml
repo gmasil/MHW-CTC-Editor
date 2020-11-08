@@ -22,7 +22,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.gmasil</groupId>
 	<artifactId>mhw-ctc-editor</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>MHW-CTC-Editor</name>
 	<description>Editor for CTC files from Monster Hunter World to manipulate physical effects</description>
 
