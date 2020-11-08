@@ -207,6 +207,8 @@ public class CtcEditor extends JFrame
 			treeViewer.setCtc(CtcIO.readFile(file));
 			treeViewer.setCtcChanged(false);
 			currentlyOpenedFile = file;
+			Config.setLastOpenedFile(file.getAbsolutePath());
+			Config.save();
 			LOG.info("CTC file loaded successfully: {}", file.getAbsolutePath());
 			setMainText(SELECT_INFO);
 		} catch (Exception e) {
@@ -220,6 +222,9 @@ public class CtcEditor extends JFrame
 			try {
 				CtcIO.write(treeViewer.getCtc(), file);
 				treeViewer.setCtcChanged(false);
+				currentlyOpenedFile = file;
+				Config.setLastOpenedFile(file.getAbsolutePath());
+				Config.save();
 				LOG.info("CTC file successfully saved to {}", currentlyOpenedFile.getAbsolutePath());
 			} catch (IOException e) {
 				LOG.error("Error while saving CTC file to {}", currentlyOpenedFile.getAbsolutePath(), e);

@@ -30,11 +30,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class WindowsFileChooser implements Serializable {
 	private FileOpenedListener listener;
-	private File lastOpenedFile = null;
 
 	public WindowsFileChooser(FileOpenedListener listener) {
 		this.listener = listener;
-		lastOpenedFile = new File(Config.getLastOpenedFile());
 	}
 
 	public void showOpenDialog() {
@@ -42,8 +40,7 @@ public class WindowsFileChooser implements Serializable {
 			FileChooser fileChooser = createFileChooser();
 			File selectedFile = fileChooser.showOpenDialog(null);
 			if (selectedFile != null) {
-				lastOpenedFile = selectedFile;
-				Config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
+				Config.setLastOpenedFile(selectedFile.getAbsolutePath());
 				Config.save();
 				listener.onFileOpened(selectedFile);
 			}
@@ -55,8 +52,7 @@ public class WindowsFileChooser implements Serializable {
 			FileChooser fileChooser = createFileChooser();
 			File selectedFile = fileChooser.showSaveDialog(null);
 			if (selectedFile != null) {
-				lastOpenedFile = selectedFile;
-				Config.setLastOpenedFile(lastOpenedFile.getAbsolutePath());
+				Config.setLastOpenedFile(selectedFile.getAbsolutePath());
 				Config.save();
 				listener.onFileSaved(selectedFile);
 			}
@@ -72,7 +68,8 @@ public class WindowsFileChooser implements Serializable {
 	}
 
 	private void setInitialDirectory(FileChooser fileChooser) {
-		if (lastOpenedFile != null) {
+		if (Config.getLastOpenedFile() != null) {
+			File lastOpenedFile = new File(Config.getLastOpenedFile());
 			File initialDirectory;
 			if (lastOpenedFile.isFile()) {
 				initialDirectory = lastOpenedFile.getParentFile();
