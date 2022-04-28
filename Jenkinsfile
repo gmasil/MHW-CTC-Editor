@@ -24,6 +24,7 @@ pipeline {
   post {
     always {
       archiveArtifacts artifacts: 'target/MHW-CTC-Editor.exe', fingerprint: true
+      cleanWs()
     }
   }
 }
