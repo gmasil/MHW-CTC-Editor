@@ -51,7 +51,7 @@
 		<product.version>1.0.0.0</product.version>
 		<!-- versions -->
 		<javafx.version>11</javafx.version>
-		<logback.version>1.2.3</logback.version>
+		<logback.version>1.4.14</logback.version>
 		<commons.version>2.8.0</commons.version>
 		<jansi.version>1.18</jansi.version>
 		<miglayout.version>5.2</miglayout.version>
@@ -346,6 +346,13 @@
 		</repository>
 	</repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>GMasil Nexus</id>
+			<url>https://nexus.gmasil.de/repository/maven-releases/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<distributionManagement>
 		<repository>
 			<id>nexus</id>
