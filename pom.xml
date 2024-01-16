@@ -346,6 +346,13 @@
 		</repository>
 	</repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>GMasil Nexus</id>
+			<url>https://nexus.gmasil.de/repository/maven-releases/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<distributionManagement>
 		<repository>
 			<id>nexus</id>

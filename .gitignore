@@ -5,3 +5,6 @@ target/
 mhw-ctc-editor.properties
 *.log
 .sts4-cache/
+.idea/
+build/
+.gradle/
